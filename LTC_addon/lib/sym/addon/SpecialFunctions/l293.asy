@@ -1,0 +1,46 @@
+Version 4
+SymbolType CELL
+LINE Normal -144 3 -144 -64
+LINE Normal -78 -31 -144 3
+LINE Normal -144 -64 -78 -31
+LINE Normal -31 -31 -78 -31
+LINE Normal -207 -32 -144 -32
+LINE Normal -146 133 -146 63
+LINE Normal -80 96 -146 133
+LINE Normal -146 63 -80 96
+LINE Normal -32 96 -80 96
+LINE Normal -208 96 -145 96
+LINE Normal -112 80 -112 -12
+LINE Normal -209 32 -111 32
+RECTANGLE Normal -208 -128 -32 208
+TEXT -66 185 Center 2 LT
+WINDOW 0 -69 218 Center 2
+WINDOW 38 -87 150 Center 2
+SYMATTR SpiceModel L293
+SYMATTR Prefix X
+SYMATTR Description Generic Symbol for use with subcircuts that you supply.
+SYMATTR ModelFile addon\L293.lib
+PIN -208 32 BOTTOM 8
+PINATTR PinName EN
+PINATTR SpiceOrder 1
+PIN -208 -32 BOTTOM 8
+PINATTR PinName IN1
+PINATTR SpiceOrder 2
+PIN -32 -32 BOTTOM 8
+PINATTR PinName OUT1
+PINATTR SpiceOrder 3
+PIN -144 208 BOTTOM 8
+PINATTR PinName GND
+PINATTR SpiceOrder 4
+PIN -208 96 BOTTOM 8
+PINATTR PinName IN2
+PINATTR SpiceOrder 5
+PIN -32 96 BOTTOM 8
+PINATTR PinName OUT2
+PINATTR SpiceOrder 6
+PIN -160 -128 TOP 8
+PINATTR PinName VCC1
+PINATTR SpiceOrder 7
+PIN -80 -128 TOP 8
+PINATTR PinName VCC2
+PINATTR SpiceOrder 8

@@ -1,0 +1,96 @@
+Version 4
+SymbolType CELL
+LINE Normal -296 0 -304 -8
+LINE Normal -304 8 -296 0
+LINE Normal -76 142 -76 31
+LINE Normal -20 142 -76 142
+LINE Normal -61 142 -76 125
+LINE Normal -43 142 -61 142
+LINE Normal -76 105 -43 142
+LINE Normal -76 86 -76 105
+LINE Normal -25 142 -76 86
+LINE Normal -114 33 -114 144
+LINE Normal -170 33 -114 33
+LINE Normal -129 33 -114 50
+LINE Normal -147 33 -129 33
+LINE Normal -114 70 -147 33
+LINE Normal -114 89 -114 70
+LINE Normal -165 33 -114 89
+LINE Normal 51 161 -192 161
+LINE Normal 38 156 51 161
+LINE Normal 52 161 38 156
+LINE Normal 40 169 52 161
+LINE Normal -189 9 -189 169
+LINE Normal -200 22 -189 9
+LINE Normal -189 8 -200 22
+LINE Normal -180 20 -189 9
+LINE Normal -76 169 -76 142 1
+LINE Normal 17 142 -21 142 1
+LINE Normal -361 110 -361 110 1
+LINE Normal -29 153 -17 134 2
+LINE Normal -48 148 -29 153 2
+LINE Normal -69 152 -48 148 2
+LINE Normal -81 139 -69 152 2
+LINE Normal -104 89 -81 139 2
+LINE Normal -114 168 -114 144 1
+LINE Normal -215 33 -170 33 1
+LINE Normal -214 141 -76 142 1
+LINE Normal -140 152 -158 117
+LINE Normal -80 152 -140 152
+LINE Normal -94 147 -80 152
+LINE Normal -80 153 -94 147
+LINE Normal -93 157 -80 153
+LINE Normal -118 16 -104 89 2
+LINE Normal 14 34 14 145
+LINE Normal 70 34 14 34
+LINE Normal 29 34 14 51
+LINE Normal 47 34 29 34
+LINE Normal 14 71 47 34
+LINE Normal 14 90 14 71
+LINE Normal 65 34 14 90
+LINE Normal -24 33 -24 142
+LINE Normal -24 114 -24 33
+LINE Normal -76 59 -24 114
+LINE Normal -76 31 -76 59
+LINE Normal -24 84 -76 31
+LINE Normal -24 169 -24 142 1
+LINE Normal 14 172 14 145 1
+LINE Normal 2 81 -16 134 2
+LINE Normal 14 24 2 81 2
+RECTANGLE Normal 159 208 -305 -32
+RECTANGLE Normal 73 192 159 69
+TEXT -88 181 Left 2 fp1
+TEXT -134 182 Left 2 fs1
+TEXT -264 32 Left 2 Asc
+TEXT -250 140 Left 2 As
+TEXT -233 -9 Left 2 Att(f) en dB
+TEXT -249 164 Left 2 0dB
+TEXT 58 159 Left 2 f
+TEXT -247 100 Left 2 Ap :ripple
+TEXT 70 58 Left 2 debug
+TEXT -41 181 Left 2 fp2
+TEXT 4 181 Left 2 fs2
+WINDOW 38 -9 -14 Center 2
+WINDOW 40 -103 -49 Center 2
+WINDOW 39 -107 -84 Center 2
+SYMATTR SpiceModel Bessel
+SYMATTR SpiceLine2 G=1 Asc=3 Ap=1 As=40 N=0
+SYMATTR SpiceLine fs1=400 fp1=500 fp2=600 fs2=750
+SYMATTR Prefix X
+SYMATTR ModelFile addon\filter.sub
+SYMATTR Description LowPass filter: See filter.sub for a detailed description and usage.
+PIN -304 0 LEFT 8
+PINATTR PinName in
+PINATTR SpiceOrder 1
+PIN 160 0 RIGHT 8
+PINATTR PinName out
+PINATTR SpiceOrder 2
+PIN 160 96 RIGHT 8
+PINATTR PinName order
+PINATTR SpiceOrder 3
+PIN 160 160 RIGHT 8
+PINATTR PinName choice
+PINATTR SpiceOrder 4
+PIN 48 208 NONE 8
+PINATTR PinName not used
+PINATTR SpiceOrder 5

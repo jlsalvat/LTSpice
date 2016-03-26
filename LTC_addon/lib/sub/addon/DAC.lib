@@ -1,0 +1,172 @@
+################## Model Data Report #########
+*none
+.subckt DAC16 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19
+**************************************************************
+*** Stand Alone Model - 16 Bit Digital to Analog Converter ***
+*** Input Values in the undefined state will cause erroneous tput.
+*** Digital threshold levels must be adhered to.
+**************************************************************
+*Nodes 1 to 16 -- D0 to D15 -- LSB to MSB
+*Node 19 -- Vref+
+*Node 18 -- Output
+*Node 17 -- Vref-
+********************
+**Set Output Range**
+********************
+rrefp 19 0 1e6
+rrefn 17 0 1e6
+********************
+A1 1 0 0 0 0 0 rd0 0 SCHMITT
+A2 2 0 0 0 0 0 rd1 0 SCHMITT
+A3 3 0 0 0 0 0 rd2 0 SCHMITT
+A4 4 0 0 0 0 0 rd3 0 SCHMITT
+A5 5 0 0 0 0 0 rd4 0 SCHMITT
+A6 6 0 0 0 0 0 rd5 0 SCHMITT
+A7 7 0 0 0 0 0 rd7 0 SCHMITT
+A8 8 0 0 0 0 0 rd8 0 SCHMITT
+A9 9 0 0 0 0 0 rd9 0 SCHMITT
+A10 10 0 0 0 0 0 rd10 0 SCHMITT
+A11 11 0 0 0 0 0 rd11 0 SCHMITT
+A12 12 0 0 0 0 0 rd12 0 SCHMITT
+A13 13 0 0 0 0 0 rd13 0 SCHMITT
+A14 14 0 0 0 0 0 rd14 0 SCHMITT
+A15 15 0 0 0 0 0 rd15 0 SCHMITT
+A16 16 0 0 0 0 0 rd16 0 SCHMITT
+R1 N001 rd0 65536k
+R2 N002 rd1 32768k
+R3 N003 rd2 16384k
+R4 N004 rd3 8196k
+R5 N005 rd4 4096k
+R6 N006 rd5 2048k
+R7 N007 rd7 1024k
+R8 N008 rd8 512k
+R9 N009 rd9 256k
+R10 N0010 rd10 128k
+R11 N0011 rd11 64k
+R12 N0012 rd12 32k
+R13 N0013 rd13 16k
+R14 N0014 rd14 8k
+R15 N0015 rd15 4k
+R16 N0016 rd16 2k
+
+V1 N001 0 0
+V2 N002 0 0
+V3 N003 0 0
+V4 N004 0 0
+V5 N005 0 0
+V6 N006 0 0
+V7 N007 0 0
+V8 N008 0 0
+V9 N009 0 0
+V10 N0010 0 0
+V11 N0011 0 0
+V12 N0012 0 0
+V13 N0013 0 0
+V14 N0014 0 0
+V15 N0015 0 0
+V16 N0016 0 0
+B1 out1 0 V=I(V1)+i(V2)+i(V3)+i(V4)+i(V5)+i(V6)+i(V7)+i(V8)+I(V9)+i(V10)+i(V11)+i(V12)+i(V13)+i(V14)+i(V15)+i(V16)
+B2 10 0 V={v(17)+1k*(V(19)-V(17))*V(out1)}
+R10 10 0 1Meg
+.ends
+.subckt DAC16 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19
+**************************************************************
+*** Stand Alone Model - 16 Bit Digital to Analog Converter ***
+*** Input Values in the undefined state will cause erroneous tput.
+*** Digital threshold levels must be adhered to.
+**************************************************************
+*Nodes 1 to 12 -- D0 to D11 -- LSB to MSB
+*Node 15 -- Vref+
+*Node 14 -- Output
+*Node 13 -- Vref-
+********************
+**Set Output Range**
+********************
+rrefp 15 0 1e6
+rrefn 13 0 1e6
+********************
+A1 1 0 0 0 0 0 rd0 0 SCHMITT
+A2 2 0 0 0 0 0 rd1 0 SCHMITT
+A3 3 0 0 0 0 0 rd2 0 SCHMITT
+A4 4 0 0 0 0 0 rd3 0 SCHMITT
+A5 5 0 0 0 0 0 rd4 0 SCHMITT
+A6 6 0 0 0 0 0 rd5 0 SCHMITT
+A7 7 0 0 0 0 0 rd7 0 SCHMITT
+A8 8 0 0 0 0 0 rd8 0 SCHMITT
+A9 9 0 0 0 0 0 rd9 0 SCHMITT
+A10 10 0 0 0 0 0 rd10 0 SCHMITT
+A11 11 0 0 0 0 0 rd11 0 SCHMITT
+A12 12 0 0 0 0 0 rd12 0 SCHMITT
+R1 N001 rd0 4096k
+R2 N002 rd1 2048k
+R3 N003 rd2 1024k
+R4 N004 rd3 512k
+R5 N005 rd4 256k
+R6 N006 rd5 128k
+R7 N007 rd7 64k
+R8 N008 rd8 32k
+R9 N009 rd9 16k
+R10 N0010 rd10 8k
+R11 N0011 rd11 4k
+R12 N0012 rd12 2k
+V1 N001 0 0
+V2 N002 0 0
+V3 N003 0 0
+V4 N004 0 0
+V5 N005 0 0
+V6 N006 0 0
+V7 N007 0 0
+V8 N008 0 0
+V9 N009 0 0
+V10 N0010 0 0
+V11 N0011 0 0
+V12 N0012 0 0
+B1 out1 0 V=I(V1)+i(V2)+i(V3)+i(V4)+i(V5)+i(V6)+i(V7)+i(V8)+I(V9)+i(V10)+i(V11)+i(V12)
+B2 10 0 V={v(13)+1k*(V(15)-V(13))*V(out1)}
+R10 10 0 1Meg
+.ends
+.subckt DAC8 1 2 3 4 5 6 7 8 9 10 11 
+**************************************************************
+*** Stand Alone Model - 8 Bit Digital to Analog Converter ***
+*** Input Values in the undefined state will cause erroneous tput.
+*** Digital threshold levels must be adhered to.
+**************************************************************
+*Nodes 1 to 8 -- D0 to D7 -- LSB to MSB
+*Node 11 -- Vref+
+*Node 10 -- Output
+*Node 9 -- Vref-
+********************
+**Set Output Range**
+********************
+rrefp 11 0 1e6
+rrefn 9 0 1e6
+********************
+A1 1 0 0 0 0 0 rd0 0 SCHMITT
+A2 2 0 0 0 0 0 rd1 0 SCHMITT
+A3 3 0 0 0 0 0 rd2 0 SCHMITT
+A4 4 0 0 0 0 0 rd3 0 SCHMITT
+A5 5 0 0 0 0 0 rd4 0 SCHMITT
+A6 6 0 0 0 0 0 rd5 0 SCHMITT
+A7 7 0 0 0 0 0 rd7 0 SCHMITT
+A8 8 0 0 0 0 0 rd8 0 SCHMITT
+R1 N001 rd0 256k
+R2 N002 rd1 128k
+R3 N003 rd2 64k
+R4 N004 rd3 32k
+R5 N005 rd4 16k
+R6 N006 rd5 8k
+R7 N007 rd7 4k
+R8 N008 rd8 2k
+
+V1 N001 0 0
+V2 N002 0 0
+V3 N003 0 0
+V4 N004 0 0
+V5 N005 0 0
+V6 N006 0 0
+V7 N007 0 0
+V8 N008 0 0
+B1 out1 0 V=I(V1)+i(V2)+i(V3)+i(V4)+i(V5)+i(V6)+i(V7)+i(V8)
+B2 10 0 V={v(9)+1k*(V(11)-V(9))*V(out1)}
+R10 10 0 1Meg
+.ends

@@ -1,0 +1,58 @@
+*************************************************************************************************************
+*                                  COMMANDE THYRISTOR   IUT  POUR  PONT  MONOPHASE
+************************************************************************************************************
+* Modèle simplifié de thyristor constitué d'un interrupteur en série avec une diode
+* L'interrupteur se ferme à l'instant alpha (en degré) compté à partir de l'origine des temps
+* Il s'ouvre 180°(10ms) plus tard.
+* Ce composant convient pour la simulation des pont redresseurs monophasés
+*ou des gradateurs alimentés par des réseaux 50Hz.
+
+
+.SUBCKT Thyr_com2a in+  in-  com1 N1 com2 N2 alpha
+R12 in+ 0 100Meg
+R13 in- 0 100MEg
+
+XU10 in+ in- oa1 opamp VCC=10 Aol=100K GBW=10Meg
+XU12 U12- 0 U12S opamp VCC=180 Aol=100K GBW=10Meg
+R14 U12- oa1 0.6k
+C1 U12S U12- 1µ
+XU13 U12S U12- oa1 0 default Ron=1 Roff=1Meg Vt=.5 Vh=-.4
+XU14 alpha U12S P0011 opamp VCC=180 Aol=100K GBW=10Meg
+XU15 U12S fen P0012 opamp VCC=180 Aol=100K GBW=10Meg
+D11 bd10 P0011 D
+D12 bd10 P0012 D
+R15 10V bd10 1k
+V10 10V 0 10
+B2 fen 0 V=V(alpha)+10
+R16 bd10 bd11 1k
+C12 bd11 0 1n
+A1 0 bd11 0 pulse 0 0 BD1 0 AND
+Vpulse pulse 0 PULSE(0 1 0 1n 1n 50u 100u)
+E11 com11 N1 BD1 0 10
+R17 com1 com11 1k
+R18 com1 N1 10meg
+R19 N1 0 1G
+
+XU20 in- in+ oa2 opamp VCC=10 Aol=100K GBW=10Meg
+XU22 U22- 0 U22S opamp VCC=180 Aol=100K GBW=10Meg
+R24 U22- oa2 0.6k
+C2 U22S U22- 1µ
+XU23 U22S U22- oa2 0 default Ron=1 Roff=1Meg Vt=.5 Vh=-.4
+XU24 alpha U22S P0021 opamp VCC=180 Aol=100K GBW=10Meg
+XU25 U22S fen P0022 opamp VCC=180 Aol=100K GBW=10Meg
+D21 bd20 P0021 D
+D22 bd20 P0022 D
+R25 10V bd20 1k
+R26 bd20 bd21 1k
+C22 bd21 0 1n
+A2 0 bd21 0 pulse 0 0 BD2 0 AND
+E21 com21 N2 BD2 0 10
+R27 com2 com21 1k
+R28 com2 N2 10meg
+R29 N2 0 1G
+.model D D
+.lib C:\Program Files\LTC\SwCADIII\lib\cmp\standard.dio
+.lib opamp.sub
+.lib sw.lib
+
+.ends Thyr_com2a

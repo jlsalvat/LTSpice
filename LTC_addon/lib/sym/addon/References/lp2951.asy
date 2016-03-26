@@ -1,0 +1,24 @@
+Version 4
+SymbolType BLOCK
+RECTANGLE Normal 64 160 -96 -80
+WINDOW 3 -15 -5 Center 2
+SYMATTR Value LP2951
+SYMATTR Prefix X
+SYMATTR Value2 LP2951
+SYMATTR SpiceModel addon\lp2951.sub
+SYMATTR Description Linear Voltage Regulator LDO 100mA
+PIN -64 -80 TOP 8
+PINATTR PinName IN
+PINATTR SpiceOrder 1
+PIN 64 32 RIGHT 8
+PINATTR PinName FB
+PINATTR SpiceOrder 2
+PIN 64 128 RIGHT 8
+PINATTR PinName ERR
+PINATTR SpiceOrder 3
+PIN -96 128 LEFT 8
+PINATTR PinName SD
+PINATTR SpiceOrder 4
+PIN 32 -80 TOP 8
+PINATTR PinName OUT
+PINATTR SpiceOrder 5

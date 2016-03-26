@@ -1,0 +1,5 @@
+*Equation laplace automation
+.subckt laplace in out L1={F}
+E1 Vout 0 in 0 Laplace={L1}
+Raux out 0 1T
+.ends

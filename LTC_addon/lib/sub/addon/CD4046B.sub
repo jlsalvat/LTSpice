@@ -1,0 +1,128 @@
+* block symbol definitions
+.subckt cd4046b COMP SIG PC1 PC2 PCP ZD C1A C1B R1 R2 VCOin INH DEMout VCOout VSS VCC VCC1=5  SPEED=1.0 TDEL1=20n TRIPDT1=8n
+A1 SIG1 0 0 0 0 0 N002 0 BUF ref={vcc1/2}
+A11 COMP 0 0 0 0 0 N009 0 BUF ref={vcc1/2}
+M1 N023 N030 0 0 MHCNEN W=250u L=2.5u
+M2 N023 N022 VCC VCC MHCPEN W=500u L=2.4u
+A3 N003 0 0 0 0 N004 0 0 BUF td={0.5*tdel1} tripdt={tripdt1}
+A23 N007 0 0 0 0 0 N008 0 BUF td={tdel1} tripdt={tripdt1} ref=0.5 vhigh={vcc1}
+A13 N010 0 0 0 0 N005 0 0 BUF td={0.5*tdel1} tripdt={tripdt1}
+A14 N005 0 0 0 0 N014 0 0 BUF td={0.5*tdel1} tripdt={tripdt1}
+A4 N004 0 0 0 0 N013 0 0 BUF td={0.5*tdel1} tripdt={tripdt1}
+A81 N015 0 0 0 0 N020 0 0 BUF td={tdel1} tripdt={tripdt1}
+A82 N020 0 0 0 0 N021 0 0 BUF td={tdel1} tripdt={tripdt1} ref=0.5 Vhigh={vcc1}
+A73 N024 0 0 0 0 N019 0 0 BUF td={0.5*tdel1} tripdt={tripdt1}
+A72 N025 0 0 0 0 N024 0 0 BUF td={0.5*tdel1} tripdt={tripdt1}
+A51 0 N013 0 N015 0 N016 0 0 AND td={tdel1} tripdt={tripdt1}
+A52 0 N016 N019 N018 0 N015 0 0 AND td={tdel1} tripdt={tripdt1}
+A53 0 N016 0 N017 0 N018 0 0 AND td={tdel1} tripdt={tripdt1}
+A54 0 N018 0 N019 0 N017 0 0 AND td={tdel1} tripdt={tripdt1}
+A61 0 N027 N019 N026 0 N028 0 0 AND td={tdel1} tripdt={tripdt1}
+A64 0 N031 0 N026 0 N027 0 0 AND td={tdel1} tripdt={tripdt1}
+A63 0 N019 0 N027 0 N031 0 0 AND td={tdel1} tripdt={tripdt1}
+A62 0 N028 N014 0 0 N026 0 0 AND td={tdel1} tripdt={tripdt1}
+A84 0 N015 0 N028 0 N032 0 0 AND td={tdel1} tripdt={tripdt1}
+A71 N018 N016 0 N026 N027 N025 0 0 AND td={tdel1} tripdt={tripdt1}
+A22 N006 0 0 0 0 N007 0 0 BUF td={tdel1} tripdt={tripdt1}
+A12 N009 0 0 0 0 N010 0 0 BUF td={0.5*tdel1} tripdt={tripdt1}
+A86 N033 0 0 0 0 0 N034 0 BUF td={tdel1} tripdt={tripdt1} ref=0.5 vhigh={vcc1}
+A85 N032 0 0 0 0 N033 0 0 BUF td={0.5*tdel1} tripdt={tripdt1}
+A83 N028 0 0 0 0 N029 0 0 BUF td={2*tdel1} tripdt={tripdt1} ref=0.5 Vhigh={vcc1}
+R10 N021 N022 1k
+C6 VCC N022 50p
+R11 N029 N030 1k
+C7 N030 0 50p
+A21 0 N004 0 N005 0 N006 0 0 XOR td={tdel1} tripdt={tripdt1}
+R7 VCOin 0 1G
+R13 VCOout N012 100
+R4 INH 0 1G
+R3 C1A 0 1G
+R9 R2 0 1G
+R15 R1 0 1G
+R17 C1B 0 1G
+R16 VCOin 0 1G
+R18 C1A 0 1G
+R19 R2 0 1G
+R20 R1 0 1G
+R21 C1B 0 1G
+B3 VCCH 0 V=0.5*V(vcc,0)
+R1 0 VSS 1G
+R2 0 VSS 1G
+R5 N008 PC1 500
+R8 N034 PCP 500
+B5 N001 0 V=limit(0,(V(vcoin,0)-1.8),{vcc1-1.2})
+R12 N001 DEMout 500
+R6 N023 PC2 500
+D1 0 ZD ZD7
+R14 ZD 0 1G
+B2 SIG1 0 V=V(vcch,0)*(1-tanh(v(sig,vcch)))
+R22 SIG SIG1 1e6
+A2 N002 0 0 0 0 0 N003 0 BUF td={0.5*tdel1} tripdt={tripdt1}
+XX1 C1A C1B R1 R2 VCOin N011 VCC cd4046_vco_h
+XU1 INH N011 N012 VDD 0 CD4071B VDD=5 SPEED=1.0 TRIPDT=5e-9
+V100 VDD 0 5
+.Model MHCNEN NMOS (
++LEVEL = 3
++KP    = 45.3E-6
++VTO   = 0.72
++TOX   = 51.5E-9
++NSUB  = 2.8E15
++GAMMA = 0.94e-6
++PHI   = 0.65
++VMAX  = 150E3
++RS    = 40
++RD    = 40
++XJ    = 0.11E-6
++LD    = 0.52E-6
++DELTA = 0.315
++THETA = 0.054
++ETA   = 0.025
++KAPPA = 0.0
++WD    = 0.0 )
+
+.Model MHCPEN PMOS (
++LEVEL = 3
++KP    = 22.1E-6
++VTO   = -0.71
++TOX   = 51.5E-9
++NSUB  = 3.3E16
++GAMMA = 0.92e-6
++PHI   = 0.65
++VMAX  = 970E3
++RS    = 80
++RD    = 80
++XJ    = 0.63E-6
++LD    = 0.23E-6
++DELTA = 2.24
++THETA = 0.108
++ETA   = 0.322
++KAPPA = 0.0
++WD    = 0.0 )
+.model ZD7  D(Is=1e-12 Rs=50 BV=7.0 IBV=0.05m)
+.ends
+
+.subckt cd4046_vco_h Cext1 Cext2 R1 R2 VCOin VCOout VCC
+D1 Cext1 VCC 1N914
+D2 Cext2 VCC 1N914
+S1c N003 Cext1 PSW 0 SW
+S2c N003 Cext2 NSW 0 SW
+M1 N003 VCOin R1 R1 BSS123
+M2 N003 Th_ref R2 R2 BSS123
+S1v Cext1 VCC NSW 0 SW
+S2v Cext2 VCC PSW 0 SW
+A1 N001 N002 0 0 0 NSW PSW 0 SRFLOP Td=10ns Trise=10ns Tfall=10ns
+A2 Th_ref Cext2 0 0 0 0 N001 0 SCHMITT Vt=0 Vh=0.1
+A3 Th_ref Cext1 0 0 0 0 N002 0 SCHMITT Vt=0 Vh=0.1
+Bref Th_ref 0 V=V(VCC)*0.6
+B1 VCOout 0 V=V(VCC)*V(PSW)
+.model SW SW(Ron=10 Roff=10G Vt=0.5)
+.ends cd4046_vco_h
+
+.model 1N914 D(Is=2.52n Rs=.568 N=1.752 Cjo=4p M=.4 tt=20n Iave=200m Vpk=75 mfg=Motorola type=silicon )
+.model BSS123 VDMOS(Rg=3 Rd=2.4 Rs=1.8 Vto=1.6 Kp=1 Cgdmax=0.1n Cgdmin=0.01n Cgs=0.1n Cjo=0.03n Is=2.8p Rb=3.0 mfg=Fairchild Vds=100 Ron=6 Qg=1.4n)
+
+
+* The visible parameters are from the CD4046 model. \nThey can be made invisible in the symbol's dialog.\nTherefore RightMouseClick on the symbol and uncheck it.\n \nFMAX = max. VCO frequency\nFMIN = min. VCO frequency\nTDEL1=20n  internal gate delay; don't change it\nTRIPDT1=8n  change it to 8n for Fvco>=2.5e5, 8n*2.5e5/Fvco_max\nExample: Fvco_max=1kHz -> TRIPDT=2u
+* The CD4046 PLL\nHelmut Sennewald, V0.8\nPlease refer to TI, Fairchild, Onsemi and  Philips datasheets.\nhttp://focus.ti.com/lit/ds/symlink/cd4046b.pdf\nhttp://www.fairchildsemi.com/ds/CD/CD4046BC.pdf\nhttp://www.onsemi.com/pub/Collateral/MC14046B-D.PDF\nhttp://www.semiconductors.philips.com/acrobat_download/datasheets/HEF4046B_CNV_3.pdf\nCheck carefully the datasheets, because there may be differences.\n \nThis is a hierarchical design. You can RightMouseClick \non the instance(symbol) and probe down the hierarchy. \nTo probe signals down the hierarchy requires\nControl Panel -> Save Defaults \n...Save Subcircuit Voltages\n...Save Subcircuit Currents
+* Zener diode
+.lib addon\CD4000.lib

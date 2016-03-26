@@ -1,0 +1,84 @@
+Circuit: * C:\Users\Jean Louis Salvat\Desktop\LTspiceIV\examples\addon\sensors\PT100_test.asc
+
+Direct Newton iteration failed to find .op point.  (Use ".option noopiter" to skip.)
+Starting Gmin stepping
+Increasing initial diag. Gmin to 100
+Increasing initial diag. Gmin to 1000
+Gmin = 1000
+vernier = 0.5
+vernier = 0.25
+vernier = 0.125
+Gmin = 649
+vernier = 0.0625
+vernier = 0.03125
+vernier = 0.015625
+vernier = 0.0078125
+Gmin = 641.463
+vernier = 0.00390625
+vernier = 0.00195313
+vernier = 0.000976563
+vernier = 0.000488281
+Gmin = 640.759
+Gmin = 0
+Gmin stepping succeeded in finding the operating point.
+
+Semiconductor Device Operating Points:
+                        --- Diodes ---
+Name:    d:u1:p      d:u1:ln     d:u1:lp     d:u1:e      d:u1:c
+Model:    u1:dx       u1:dx       u1:dx       u1:dy       u1:dy
+Id:     -1.20e-11   -2.84e-04   -1.01e-10    5.11e-02   -9.77e-12
+Vd:     -1.20e+01    8.00e-01   -1.01e+02    8.22e-01   -9.82e+00
+Req:     1.00e+12    1.20e+00    1.00e+12    5.07e-01    1.00e+12
+CAP:     0.00e+00    0.00e+00    0.00e+00    1.87e-11    3.04e-12
+
+Name:    d:u3:1
+Model:    u3:y
+Id:     -2.63e-07
+Vd:     -2.63e+00
+Req:     1.00e-07
+CAP:     0.00e+00
+
+                        --- JFET Transistors ---
+Name:    j:u1:2      j:u1:1
+Model:    u1:jx       u1:jx
+Id:      2.31e-04    1.38e-11
+Vgs:    -5.16e-01   -2.49e+00
+Vds:     8.17e+00    8.85e+00
+Gm:      9.53e-04    0.00e+00
+Gds:     0.00e+00    0.00e+00
+Cgs:     0.00e+00    0.00e+00
+Cgd:     0.00e+00    0.00e+00
+
+                        --- VDMOSFET Transistors ---
+Name:        m:u3:1
+Model:        u3:n
+Id:          7.15e-04
+Vgs:         1.25e+00
+Vds:         2.63e+00
+Vth:         1.25e+00
+Gm:          3.78e+00
+Gds:         0.00e+00
+Cgs:         0.00e+00
+Cgd:         0.00e+00
+Cbody:       0.00e+00
+
+
+
+Date: Sat Feb 16 20:33:43 2013
+Total elapsed time: 0.427 seconds.
+
+tnom = 27
+temp = 27
+method = trap
+totiter = 1601
+traniter = 0
+tranpoints = 0
+accept = 0
+rejected = 0
+matrix size = 35
+fillins = 44
+solver = Normal
+Matrix Compiler1: 3,59 Ko object code size
+Matrix Compiler2: off  [0.4]/0.5/0.5
+
+

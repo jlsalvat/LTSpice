@@ -1,0 +1,27 @@
+Version 4
+SymbolType BLOCK
+LINE Normal -48 0 -33 0
+LINE Normal -48 32 -33 32
+LINE Normal 0 -32 0 -16
+LINE Normal 0 64 0 48
+LINE Normal 48 16 31 16
+LINE Normal 38 16 31 9
+RECTANGLE Normal 31 48 -33 -16
+TEXT -3 21 Left 0 &
+SYMATTR Value 74HC00
+SYMATTR Description 2-input GATE NAND
+PIN -48 0 NONE 8
+PINATTR PinName A
+PINATTR SpiceOrder 1
+PIN -48 32 NONE 8
+PINATTR PinName B
+PINATTR SpiceOrder 2
+PIN 0 -32 NONE 8
+PINATTR PinName ALIM+
+PINATTR SpiceOrder 3
+PIN 0 64 NONE 8
+PINATTR PinName ALIM-
+PINATTR SpiceOrder 4
+PIN 48 16 NONE 8
+PINATTR PinName S
+PINATTR SpiceOrder 5

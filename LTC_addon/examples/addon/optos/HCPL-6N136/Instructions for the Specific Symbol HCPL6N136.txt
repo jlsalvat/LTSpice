@@ -1,0 +1,76 @@
+Helmut Sennewald
+2009-04-11
+
+Instructions for the Specific Symbol HCPL6N136
+==============================================
+
+Start LTspice
+
+Draw the symbol
+---------------
+
+File->New Symbol
+
+Add 6 pins
+Edit->Add Pin/Port
+
+Label: name of pin
+Netlist Order: 1  to 6
+
+  Useful labels(names) are: A, C, COM, OUT, VB, VCC
+
+  Netlist Order in the pins: 
+  A(node) 1
+  C(athode) 2
+  COM(mon) 3
+  OUT(put) 4
+  VB 5
+  VCC 6
+ 
+  * 6N136 SPICE model
+  *                  Anode(pin2)
+  *                  |    Cathode(pin3)
+  *                  |    |    Common(pin5)
+  *                  |    |    |    Output(pin6)
+  *                  |    |    |    |    VB(pin7)
+  *                  |    |    |    |    |    Vcc(pin8)
+  *                  |    |    |    |    |    |
+  .SUBCKT HCPL6N136 102  103  105  106  107  108
+  ...
+
+Draw a fancy graphic around the pins. The graphic doesn't have 
+any meaning for the simulation.
+
+
+Fill-in the attribute fields
+----------------------------
+
+Edit->Attributes->Edit Attributes
+
+Symbol Type: Cell
+
+Prefix: X
+SpiceModel: Avago6N136_MOD.txt
+Value: HCPL6N136
+Value2: HCPL6N136
+...
+Description: High Speed Optocoupler
+
+"Value" can be any name, e.g. 6N136. "Value2" has to be the model 
+name in the subcircuit (HCPL6N136).
+
+
+Make some attributes visible on the schematic
+--------------------------------------------- 
+
+Edit->Attributes->Attribute Window InstName
+
+Edit->Attributes->Attribute Window Value
+
+
+OK, Save the symbol.
+
+Copy the symbol file and the model file into every schematic 
+folder where you use this part.
+ 
+  

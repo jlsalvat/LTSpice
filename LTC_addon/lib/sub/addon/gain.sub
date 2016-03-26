@@ -1,0 +1,5 @@
+*GAIN statique laplace automation
+.subckt gain in out K1={K}
+bz out 0 V={V(in)*(K1)}
+Raux out 0 1T
+.ends

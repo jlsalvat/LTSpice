@@ -1,0 +1,7 @@
+*transfo_ideal.sub
+.subckt Transfo_Ideal 1 2 4 3
+LP 1 2 {Lp}
+LS 3 4 {Lp*(m*m)}
+RIsol 2 3 100Meg
+KT LP LS 0.99999
+.ends

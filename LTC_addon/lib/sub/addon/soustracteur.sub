@@ -1,0 +1,6 @@
+* C:\Program Files\LTC\SwCADIII\examples\LtSpicePlus\am_mod\AM_source2.asc
+.subckt soustracteur V+ V- Eps
+B1 Eps 0 V=V(V+)-V(V-)
+R1 V+ 0 1Meg
+R2 V- 0 1Meg
+.end

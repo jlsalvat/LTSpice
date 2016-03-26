@@ -1,0 +1,64 @@
+********************************************************************************
+*
+*  Various other functions/additions that don't fit in the one- or two-variable
+* categories.
+*
+********************************************************************************
+*
+* [CONTENTS]
+*
+* - The list of symbols in [Math], in alphabetical order:
+*
+* - Const	- constant
+* - Math1	- one input functions (separate .sub file)
+* - Math2	- two inputs functions (separate .sub file)
+* - Math2r	- round version of Math2
+* - Math5r	- 5 input summer
+*
+*
+* [GENERAL]
+*
+* - The updates for all the files in [Math] will be mentioned at the end of this
+* file.
+*
+********************************
+*
+*	Constant value
+*
+********************************
+*
+* [NOTES]
+*
+* - Since it's a B-source, {c} can have expressions, as well.
+*
+********************************
+.subckt Const out
+B1 0 out Rpar=1 I={c}
+.param c=1
+.ends Const
+********************************
+*
+*	Summer, 5 inputs
+*
+********************************
+*
+* [NOTES]
+*
+* - Unused inputs need grounding.
+*
+********************************
+.subckt Sum a b c d e out
+G1 0 out a 0 1
+G2 0 out b 0 1
+G3 0 out c 0 1
+G4 0 out d 0 1
+G5 0 out e 0 1
+R1 out 0 1
+.ends Sum
+********************************************************************************
+*
+* [UPDATES]
+*
+* 2013.01.19	- Overall modifications and improvements.
+*
+********************************************************************************

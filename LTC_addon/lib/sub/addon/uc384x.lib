@@ -1,0 +1,583 @@
+*==========================================================
+* UC3842B
+* ON Semiconductor
+* PWM Controller
+*
+* This model was developed for ON Semiconductor by:
+* AEI Systems, LLC
+* 5777 W. Century Blvd. Suite 876
+* Los Angeles, California 90045
+* Copyright 2002, all rights reserved.
+*
+* This model is subject to change without notice.
+* Users may not directly or indirectly re-sell or 
+* re-distribute this model. This model may not 
+* be used, modified, or altered 
+* without the consent of ON Semiconductor. 
+*
+* For more information regarding modeling services,
+* model libraries and simulation products, please
+* call AEi Systems at (310) 863-8034, or contact 
+* AEi by email: info@aeng.com. http://www.AENG.com
+*
+* Revision: 1.0
+*==========================================================
+*
+* PSpice translation by Christophe Basso, christophe.basso@onsemi.com
+*
+.SUBCKT UC3842B  3    14   15   1     18    4   20   2  
+*              E/A  FDBK  IS  RT/CT  GND  OUT  VC  VREF
+****OSCILLATOR*****
+XTOF1 8 18 1 18 SWhyste params: RON=.01 ROFF=1MEG VT=2.05 VH=.8
+GBDISCH 1 18 Value = { IF ( V(8,18) < 2.5 & V(13,18) > 2.5, 8.3M, 0 ) }
+RPULL 8 2 100K
+****UVLO***********
+XTOF2 20 19 20 18 SWhyste params: RON=.01 ROFF=1MEG VT=13 VH=3
+RUVLO 19 18 1MEG
+RSTDBY 20 18 32K
+ROP 10 18 500
+****REFERENCE*******
+EBREF 13 18 Value = { IF ( V(19,18) > 6, 5, 0 ) }
+RREG 10 2 .33
+CREF 2 18 1n
+V3 13 10 
+GB6 19 18 Value = { I(V3) }
+****CURRENT COMPARATOR*******
+EB3 21 18 Value = { IF ( V(15,18) > V(16,18), 5, 0 ) }
+R7 15 18 1MEG
+RDELAY 21 22 1K
+CDELAY 22 18 150P
+****ERROR AMPLIFIER**********
+XAMP 2 14 3 18 1845AMP
+****OFFSET LIMITER***********
+R4 12 11 2MEG
+R6 11 18 1MEG
+EB2 16 18 Value = { IF ( V(11,18) > 1, 1, V(11,18) ) }
+V4 3 9 1
+D1 9 12 D2
+.MODEL D2 D 
+****OUTPUT DRIVER************
+XDRIVE 19 18 5 4 1845OUT
+****S-R LATCH****************
+XLATCH 8 2 22 18 6 7 FFLOP
+****OUTPUT AND GATE**********
+EB8 5 18 Value = { IF ( V(2,18) > 2.5 & V(7,18) > 2.5 & V(8,18) > 2.5, 10, 0 ) }
+.ENDS
+********
+*==========================================================
+* UC3843B
+* ON Semiconductor
+* PWM Controller
+*
+* This model was developed for ON Semiconductor by:
+* AEI Systems, LLC
+* 5777 W. Century Blvd. Suite 876
+* Los Angeles, California 90045
+* Copyright 2002, all rights reserved.
+*
+* This model is subject to change without notice.
+* Users may not directly or indirectly re-sell or 
+* re-distribute this model. This model may not 
+* be used, modified, or altered 
+* without the consent of ON Semiconductor. 
+*
+* For more information regarding modeling services,
+* model libraries and simulation products, please
+* call AEi Systems at (310) 863-8034, or contact 
+* AEi by email: info@aeng.com. http://www.AENG.com
+*
+* Revision: 1.0
+*==========================================================
+*
+* PSpice translation by Christophe Basso, christophe.basso@onsemi.com
+*
+.SUBCKT UC3843B  3     14   15   1     18    4   20   2  
+*               E/A   FDBK  IS  RT/CT  GND  OUT  VC  VREF
+****OSCILLATOR*****
+XTOF1 8 18 1 18 SWhyste params: RON=.01 ROFF=1MEG VT=2.05 VH=.8
+GBDISCH 1 18 Value = { IF ( V(8,18) < 2.5 & V(13,18) > 2.5, 8.3M, 0 ) }
+RPULL 8 2 100K
+****UVLO***********
+XTOF2 20 19 20 18 SWhyste params: RON=.01 ROFF=1MEG VT=8 VH=.4
+RUVLO 19 18 1MEG
+RSTDBY 20 18 16.8K
+ROP 10 18 500
+****REFERENCE*******
+EBREF 13 18 Value = { IF ( V(19,18) > 6, 5, 0 ) }
+RREG 10 2 .33
+CREF 2 18 1n
+V3 13 10 
+GB6 19 18 Value = { I(V3) }
+****CURRENT COMPARATOR*******
+EB3 21 18 Value = { IF ( V(15,18) > V(16,18), 5, 0 ) }
+R7 15 18 1MEG
+RDELAY 21 22 1K
+CDELAY 22 18 150P
+****ERROR AMPLIFIER**********
+XAMP 2 14 3 18 1845AMP
+****OFFSET LIMITER***********
+R4 12 11 2MEG
+R6 11 18 1MEG
+EB2 16 18 Value = { IF ( V(11,18) > 1, 1, V(11,18) ) }
+V4 3 9 1
+D1 9 12 D2
+.MODEL D2 D 
+****OUTPUT DRIVER************
+XDRIVE 19 18 5 4 1845OUT
+****S-R LATCH****************
+XLATCH 8 2 22 18 6 7 FFLOP
+****OUTPUT AND GATE**********
+EB8 5 18 Value = { IF ( V(2,18) > 2.5 & V(7,18) > 2.5 & V(8,18) > 2.5, 10, 0 ) }
+.ENDS
+********
+*==========================================================
+* UC3844B
+* ON Semiconductor
+* PWM Controller
+*
+* This model was developed for ON Semiconductor by:
+* AEI Systems, LLC
+* 5777 W. Century Blvd. Suite 876
+* Los Angeles, California 90045
+* Copyright 2002, all rights reserved.
+*
+* This model is subject to change without notice.
+* Users may not directly or indirectly re-sell or 
+* re-distribute this model. This model may not 
+* be used, modified, or altered 
+* without the consent of ON Semiconductor. 
+*
+* For more information regarding modeling services,
+* model libraries and simulation products, please
+* call AEi Systems at (310) 863-8034, or contact 
+* AEi by email: info@aeng.com. http://www.AENG.com
+*
+* Revision: 1.0
+*==========================================================
+*
+* PSpice translation by Christophe Basso, christophe.basso@onsemi.com
+*
+.SUBCKT UC3844B  3     14   15   1     18    4   20   2  
+*                E/A  FDBK  IS  RT/CT  GND  OUT  VC  VREF
+****OSCILLATOR*****
+XTOF1 8 18 1 18 SWhyste params: RON=.01 ROFF=1MEG VT=2.05 VH=.8
+GBDISCH 1 18 Value = { IF ( V(8,18) < 2.5 & V(13,18) > 2.5, 8.3M, 0 ) }
+RPULL 8 2 100K
+****UVLO***********
+XTOF2 20 19 20 18 SWhyste params: RON=.01 ROFF=1MEG VT=13 VH=3
+RUVLO 19 18 1MEG
+RSTDBY 20 18 32K
+ROP 10 18 500
+****REFERENCE*******
+EBREF 13 18 Value = { IF ( V(19,18) > 6, 5, 0 ) }
+RREG 10 2 .33
+CREF 2 18 1N
+V3 13 10 
+GB6 19 18 Value = { I(V3) }
+****CURRENT COMPARATOR*******
+EB3 21 18 Value = { IF ( V(15,18) > V(16,18), 5, 0 ) }
+R7 15 18 1MEG
+RDELAY 21 22 1K
+CDELAY 22 18 150P
+****ERROR AMPLIFIER**********
+XAMP 2 14 3 18 1845AMP
+****OFFSET LIMITER***********
+R4 12 11 2MEG
+R6 11 18 1MEG
+EB2 16 18 Value = { IF ( V(11,18) > 1, 1, V(11,18) ) }
+V4 3 9 1
+D1 9 12 D2
+.MODEL D2 D 
+****OUTPUT DRIVER************
+XDRIVE 19 18 5 4 1845OUT
+****S-R LATCH****************
+XLATCH 8 2 22 18 6 7 FFLOP
+****50% LIMIT TOGGLE*********
+X9 8 150 18 18 50 51 FFLOP
+EBTRY 150 18 Value = { IF ( v(2,18) > 2.5 & v(50,18) > 2.5, 5, 0 ) }
+****OUTPUT AND GATE**********
+EB8 5 18 Value = { IF ( V(2,18) > 2.5 & V(7,18) > 2.5 & V(8,18) > 2.5 &
++ V(50,18) > 2.5, 10, 0 ) }
+.ENDS
+********
+*==========================================================
+* UC3845B
+* ON Semiconductor
+* PWM Controller
+*
+* This model was developed for ON Semiconductor by:
+* AEI Systems, LLC
+* 5777 W. Century Blvd. Suite 876
+* Los Angeles, California 90045
+* Copyright 2002, all rights reserved.
+*
+* This model is subject to change without notice.
+* Users may not directly or indirectly re-sell or 
+* re-distribute this model. This model may not 
+* be used, modified, or altered 
+* without the consent of ON Semiconductor. 
+*
+* For more information regarding modeling services,
+* model libraries and simulation products, please
+* call AEi Systems at (310) 863-8034, or contact 
+* AEi by email: info@aeng.com. http://www.AENG.com
+*
+* Revision: 1.0
+*==========================================================
+*
+* PSpice translation by Christophe Basso, christophe.basso@onsemi.com
+*
+.SUBCKT UC3845B  3     14   15   1     18    4   20   2  
+*               E/A   FDBK  IS  RT/CT  GND  OUT  VC  VREF
+****OSCILLATOR*****
+XTOF1 8 18 1 18 SWhyste params: RON=.01 ROFF=1MEG VT=2.05 VH=.8
+GBDISCH 1 18 Value = { IF ( V(8,18) < 2.5 & V(13,18) > 2.5, 8.3M, 0 ) }
+RPULL 8 2 100K
+****UVLO***********
+XTOF2 20 19 20 18 SWhyste params: RON=.01 ROFF=1MEG VT=8 VH=.4
+RUVLO 19 18 1MEG
+RSTDBY 20 18 16.8K
+ROP 10 18 500
+****REFERENCE*******
+EBREF 13 18 Value = { IF ( V(19,18) > 6, 5, 0 ) }
+RREG 10 2 .33
+CREF 2 18 1N
+V3 13 10 
+GB6 19 18 Value = { I(V3) }
+****CURRENT COMPARATOR*******
+EB3 21 18 Value = { IF ( V(15,18) > V(16,18), 5, 0 ) }
+R7 15 18 1MEG
+RDELAY 21 22 1K
+CDELAY 22 18 150P
+****ERROR AMPLIFIER**********
+XAMP 2 14 3 18 1845AMP
+****OFFSET LIMITER***********
+R4 12 11 2MEG
+R6 11 18 1MEG
+EB2 16 18 Value = { IF ( V(11,18) > 1, 1, V(11,18) ) }
+V4 3 9 1
+D1 9 12 D2
+.MODEL D2 D 
+****OUTPUT DRIVER************
+XDRIVE 19 18 5 4 1845OUT
+****S-R LATCH****************
+XLATCH 8 2 22 18 6 7 FFLOP
+****50% LIMIT TOGGLE*********
+X9 8 150 18 18 50 51 FFLOP
+EBTRY 150 18 Value = { IF ( v(2,18) > 2.5 & v(50,18) > 2.5, 5, 0 ) }
+****OUTPUT AND GATE**********
+EB8 5 18 Value = { IF ( V(2,18) > 2.5 & V(7,18) > 2.5 & V(8,18) > 2.5 &
++ V(50,18) > 2.5, 10, 0 ) }
+.ENDS
+*********
+.SUBCKT 1845AMP  4     1    9   20
+*                VREF  INV  OUT V-
+.MODEL QPMOD PNP
+.MODEL DCLAMP D (RS=10 BV=5 IBV=.01)
+.MODEL DMOD D
+R1 10 4 100K
+R2 10 20 100K
+R3 6 20 316MEG
+C1 6 20 15.9P
+E1 5 20 6 20 1
+R4 1 20 8MEG
+I2 4 9 .8M
+D12 9 4 DMOD
+R6 20 3 300
+D11 9 12 DMOD
+Q1 20 13 12 QPMOD
+I3 13 20 68U
+D14 3 13 DMOD
+D15 20 6 DCLAMP
+L1 2 3 10U
+C2 3 20 200P
+R9 5 2 5
+C5 2 20 .02U
+G1 20 6 10 1 100U
+.ENDS
+*********
+.SUBCKT 1845OUT  4  7  3  12
+*                +V -V IN OUT
+.MODEL QMOD NPN RC=1.5 RE=.5 RB=100 IKF=0.5 CJC=0.4P
+.MODEL QMOD2 NPN TF=400P TR=400P
+.MODEL QIN NPN BF=100 BR=2 IS=1E-16 VAF=50 
++ CJE=1.5P CJC=.15P TR=1N TF=4N
+.MODEL DMOD D RS=1 IS=0.4U
+I3 4 8 100U
+D3 8 4 DMOD
+D4 12 8 DMOD
+Q3 8 1 9 QIN
+Q4 12 9 7 QMOD
+Q5 4 8 6 QMOD
+I4 7 1 .9M
+R1 3 2 10K
+Q8 1 2 7 QIN
+Q2 4 6 12 QMOD2
+.ENDS
+******************
+.SUBCKT FFLOP 1  2 11 12 5  6
+*            CLK D R  S  QB Q
+X1 7 4 2 8 NAND3_0 
+X2 8 3 10 9 NAND3_0 
+X3 1 8 10 7 NAND3_1 
+X4 4 9 1 10 NAND3_0 
+X5 4 7 6 5 NAND3_1 
+X6 5 10 3 6 NAND3_0 
+X7 11 4 INV 
+X8 12 3 INV 
+.ENDS FFLOP
+*
+.SUBCKT NAND3_0 1 2 3 4
+E1 5 0 VALUE = { IF ( (V(1)>800mV) & (V(2)>800mV) & (V(3)>800mV), 0, 5 ) }
+R1 5 4 400
+C1 4 0 20P IC=0
+.ENDS NAND3_0
+*
+.SUBCKT NAND3_1 1 2 3 4
+E1 5 0 VALUE = { IF ( (V(1)>800mV) & (V(2)>800mV) & (V(3)>800mV), 0, 5 ) }
+R1 5 4 400
+C1 4 0 20P IC=5
+.ENDS NAND3_1
+*
+.SUBCKT INV 1 2
+E1 3 0 VALUE = { IF ( V(1)>800mV, 0, 5 ) }
+R1 3 2 100
+C1 2 0 10P IC=5
+.ENDS INV
+*
+.SUBCKT SWhyste NodeMinus NodePlus Plus Minus PARAMS: RON=1 ROFF=1MEG VT=5 VH=2
+S5 NodePlus NodeMinus 8 0 smoothSW
+EBcrtl 8 0 Value = { IF ( V(plus)-V(minus) > V(ref), 1, 0 ) }
+EBref ref1 0 Value = { IF ( V(8) > 0.5, {VT-VH}, {VT+VH} ) }
+Rdel ref1 ref 100
+Cdel ref 0 100p  IC={VT+VH}
+Rconv1 8 0 10Meg
+Rconv2 plus 0 10Meg
+Rconv3 minus 0 10Meg
+.model smoothSW VSWITCH (RON={RON} ROFF={ROFF} VON=1 VOFF=0)
+.ends SWhyste
+*
+****** Application models *****
+.SUBCKT MOC8101 1 2 3   5
+* ISOLATOR      A C COL EMITTER
+RB 4 0 100Meg
+VM 1 6
+D1 6 2 LED
+H1 7 0 VM .0055
+R1 7 8 1K
+C1 8 0 3.35nF
+G1 3 4 8 0 1
+Q1 3 4 5 MPSA06
+.MODEL LED D(N=1.7 RS=.7 CJO=23.9P IS=85.3p BV=6 IBV=10U 
++ VJ=0.75 M=0.333 TT=4.32U)
+.MODEL MPSA06 NPN (IS=15.2F NF=1 BF=589 VAF=98.6 IKF=90M ISE=3.34P NE=2 
++ BR=4 NR=1 VAR=16 IKR=0.135 RE=0.343 RB=1.37 RC=0.137 XTB=1.5
++ CJE=9.67P VJE=1.1 MJE=0.5 CJC=7.34P VJC=0.3 MJC=0.3 TF=10.29n TR=276N)
+.ENDS MOC8101
+*$
+**** MULTI-WINDING TRANSFORMER ****
+.SUBCKT XFMR2 1 2 3 4 10 11 PARAMS: RATIO1=1 RATIO2=1
+RP 1 2 1MEG
+E1 5 4 VALUE = { V(1,2)*RATIO1 }
+G1 1 2 VALUE = { I(VM1)*RATIO1 }
+RS1 6 3 1U
+VM1 5 6
+E2 20 11 VALUE = { V(2,1)*RATIO2 }
+G2 2 1 VALUE = { I(VM2)*RATIO2 }
+RS2 21 10 1U
+VM2 20 21 
+.ENDS XFMR2
+*$
+**** SINGLE WINDING TRANSFORMER ****
+.SUBCKT XFMR1 1 2 3 4 PARAMS: RATIO=1
+RP 1 2 1MEG
+E 5 4 VALUE = { V(1,2)*RATIO }
+G 1 2 VALUE = { I(VM)*RATIO }
+RS 6 3 1U
+VM 5 6 
+.ENDS XFMR1
+*$
+*********
+.model mbr140p d
++ is= 4.41547e-06
++ rs= 0.103922
++ n= 1.03751
++ tt= 1e-12
++ cjo= 1.598e-10
++ vj= 0.4934
++ m= 0.4258
++ eg= 0.6
++ xti= 3.29768
++ fc= 0.5
++ bv= 48
++ ibv= 0.01
++ kf= 0
++ af= 1
+*******
+*$
+.MODEL 1n962A d
++RS=5.2600 BV=10.940     
++CJO=710.46P TT=20N N=2 
++IS=1E-9 IBV=11.364M
+******
+*$
+.MODEL dn752a d
++RS=6.1685 BV=5.4766     
++M=.33 VJ=.75 IS=1E-11 
++CJO=376.59P TT=50N 
++N=1.27 IBV=10MA
+******
+*$
+.SUBCKT TL431 7 6 11
+V1 1 6 2.495
+R1 6 2 15.6
+C1 2 6 .5U
+R2 2 3 100
+C2 3 4 .08U
+R3 4 6 10
+G2 6 8 3 6 1.73
+D1 5 8 DC
+D2 7 8 DC
+V4 5 6 2
+G1 6 2 1 11 0.11
+.MODEL DC D 
++IS=13.5N RS=25M N=1.59 
++ CJO=45P VJ=.75 M=.302 
++ TT=50.4N BV=34V IBV=1MA
+.ENDS
+*$
+********
+.subckt mtd1n60e 10 20 30 
+*
+* 10 = Drain 20 = Gate 30 = Source
+*
+******************************************************************************
+*
+*------------------------ EXTERNAL PARASITICS --------------------------------
+* PACKAGE INDUCTANCE
+*
+LDRAIN  10  11  4.5e-09
+LGATE   20  21  7.5e-09
+LSOURCE 30  31  7.5e-09
+*
+* RESISTANCES
+*
+RDRAIN1    4  11 RDRAIN 6.853
+RDRAIN2    4   5 RDRAIN 0.088
+RSOURCE   31   6 RSOURCE 0.1  
+RDBODY     8  30 RDBODY  0.061
+*
+RGATE      21   2 5
+*
+*--------------------------------------------------------------------------
+*
+*--------------- CAPACITANCES AND BODY DIODE ------------------------------
+*
+DBODY       8  11 DBODY
+DGD         3  11 DGD
+CGDMAX      2   3 3e-10
+RGDMAX      2   3 1e+08
+CGS         2   6 2.2e-10 
+*
+*--------------------------------------------------------------------------
+*
+*----------------------- CORE MOSFET --------------------------------------
+*
+M1       5  2  6  6  MAIN
+*
+*--------------------------------------------------------------------------
+*
+.MODEL RDRAIN RES  (
++TC1    = 0.008186
++TC2    = 1.74896e-05)
+*
+.MODEL RSOURCE RES  (
++TC1    = -0.001057
++TC2    = 6.14713e-05)
+*
+.MODEL RDBODY RES  (
++TC1    = 0.002026
++TC2    = 1.49534e-05)
+*
+*
+.MODEL MAIN NMOS  ( 
++LEVEL   = 3
++VTO     = 3.89
++KP      = 1.75
++GAMMA   = 3
++PHI     = 0.6
++LAMBDA  = 0.0001
++RD      = 0
++RS      = 0
++CBD     = 0
++CBS     = 0
++IS      = 1e-14
++PB      = 0.8
++CGSO    = 0
++CGDO    = 0
++CGBO    = 0
++RSH     = 0
++CJ      = 0
++MJ      = 0.5
++CJSW    = 0
++MJSW    = 0.33
++JS      = 1e-14
++TOX     = 1e-07
++NSUB    = 1e+15
++NSS     = 0
++NFS     = 1.1e+12
++TPG     = 1
++XJ      = 0
++LD      = 0
++UO      = 600
++UCRIT   = 1000
++UEXP    = 0
++UTRA    = 0
++VMAX    = 0
++NEFF    = 1
++KF      = 0
++AF      = 1
++FC      = 0.5
++DELTA   = 0
++THETA   = 0
++ETA     = 0
++KAPPA   = 0.2)
+*
+*--------------------------------------------------------------------------
+*
+.MODEL DGD D  ( 
++IS      = 1e-15
++RS      = 0
++N       = 1000
++TT      = 0
++CJO     = 1.403e-10
++VJ      = 0.1366
++M       = 0.6185
++EG      = 1.11
++XTI     = 3
++KF      = 0
++AF      = 1
++FC      = 0.5
++BV      = 10000
++IBV     = 0.001)
+*
+*--------------------------------------------------------------------------
+*
+.MODEL DBODY D  ( 
++IS      = 1.891e-11
++RS      = 0
++N       = 1.196
++TT      = 5e-07
++CJO     = 1.364e-10
++VJ      = 0.9158
++M       = 0.6082
++EG      = 1.11
++XTI     = 4.5
++KF      = 0
++AF      = 1
++FC      = 0.5
++BV      = 658.9
++IBV     = 0.00025)
+.ENDS
+*$
+******

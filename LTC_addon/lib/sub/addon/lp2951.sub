@@ -1,0 +1,1458 @@
+*$ ********************************************************
+* Model of Volatge Regulator LP2951
+* Added on 12 Nov 2002 by sjaiswal
+* Pin Naming Convention
+* 21--------INPUT
+* REF------REFERENCE
+* ERROR--ERROR OUT
+* SH-------SHUTDOWN
+* 32--------OUTPUT
+
+.SUBCKT LP2951	 21   REF  ERROR SH 32
++ PARAMS:
++ CT=800p
++ IB=75u
++ IMAX=160m
++ IVD1=100u
++ LDREG=.1/.5
++ LINREG=.001
++ M1ILIM=3.90625m
++ M2ILIM=0
++ RSENSE={0.1}
++ RT=.5k
++ TC1IMAX=0
++ TC1VD=0
++ TC1VR=0
++ TC2IMAX=0
++ TC2VD=0
++ TC2VR=0
++ VD1=50m
++ VDMIN=40m
++ VMAIP=9
++ VR=1.235
+
+.PARAM AV={10000}
+.PARAM  IBMAX={0.01}
+.PARAM GAIN1={AV/100000}
+.PARAM GILIM2={-30/RSENSE}
+.PARAM GILIMMAX={IMAX*100}
+.PARAM GO={1/RO}
+.PARAM INTERCEPT={(-M1*VMAIP)+(M2ILIM*VMAIP*VMAIP)}
+.PARAM KLINE={LINREG/100}
+.PARAM KLOAD={AV*(LDREG/100)*VR}
+.PARAM KVD={{-10000}*RSENSE}
+.PARAM LINEAR={(M1-2*VMAIP*M2ILIM)}
+.PARAM M1={-1*ABS(M1ILIM)}
+.PARAM RADJ={VR/IB}
+.PARAM RBP={(RO/KLOAD-1)}
+.PARAM RDROP={10000*IVD1/(VD1-VDMIN)}
+.PARAM RO={1E+06}
+.PARAM RREF={100*VR}
+.PARAM VIBM={IBMAX/GO}
+
+C_CC13         14 4  1n
+C_CC14         7 4  1n
+C_CC15         13 2  {CT}
+C_CC16         2 10  150P
+D_DD28         14 18 M1MIDX
+D_DD29         12 5 M1MIDX
+D_DD30         15 11 M1MIDX OFF
+D_DD31         4 20 M1MIDX OFF
+D_DD32         4 7 M1MIDX OFF
+D_DD33         21 15 M1MIDX OFF
+D_DD34         5 9 M1MIDX
+D_DD35         2 16 M1MIDX
+D_DD36         2 7 M1MIDX OFF
+E_E1         1 0 22 REF 0.9993
+E_EV25         4 21 1 21 1
+E_EV27         19 1 3 4 10m
+G_GI17         4 20 21 22 1
+G_GI18         4 20 VALUE { V(8, 4) * {-VDMIN} }
+G_GI19         10 15 2 10 -1
+G_GI20         4 7 14 4 300m
+G_GI21         4 16 VALUE { V(10, 22) * {KVD} }
+G_GI22         4 7 VALUE { V(10, 22) * {GILIM2} }
+G_GI23         4 3 VALUE { V(21, 22) * {KLINE} }
+G_GI24         4 14 VALUE { {INTERCEPT} + {LINEAR} * V(21, 22) + {10m} *
++  V(18,4) + {M2ILIM} * V(21,22) *  V(21,22) }
+G_GV2         4 5 19 22 100m
+G_GV3         4 2 VALUE { V(5, 4) * {GO} }
+G_GV5         4 16 20 4 1
+I_II40         4 17 DC 1mA
+I_II41         4 8 DC 1mA
+I_II42         4 3 DC 1Adc
+R_R43         10 2  {RBP}
+R_RR44         4 14  100
+R_RR45         4 7  100
+R_RR46         4 17  1K
+R_RR47         22 10  {RSENSE}
+R_RR48         4 20  {RDROP}
+R_RR51         4 8  1K
+R_RR52         4 3  {RREF}
+R_RR53         4 16  1
+R_RR54         4 5  100K
+R_RR55        REF 0 {RADJ}
+R_RR56         13 21  {RT}
+V_VV37         4 12 {VIBM}
+V_VV38         11 10 40Vdc
+V_VV39         9 4 {VIBM}
+E_EV26         18 4 VALUE { V(17, 4) * {GILIMMAX} }
+E_EV28         ERROR 0 VALUE {V(26,0)+V(29,0)}
+R_RR57         26 27  1k
+R_RR58         30 29  1k
+R_RR59         ERROR 0  1k
+*RS_SS1         1 2 1G
+*RS_SS2         1 2 1G
+S_SS1         25 26 23 24 SW_IN
+S_SS2         29 0 21 28 SW_UNREG
+V_VV40        23 REF 60mV
+V_VV41        24 0 1.235Vdc
+V_VV42        27 0 5Vdc
+V_VV43        25 0 150m
+V_VV44        28 0 1.3Vdc
+V_VV45        30 0 1.05Vdc
+C_CC17        31 0 20n
+R_RR60        SH 31 10k
+*R_RR61         0 OUT_AFTERSH  1k
+*RS_SSH1         1 2 1G
+S_SSH1        32 22 31 0 SSH1_MODEL
+
+*-----------
+*MODELS USED:
+*-----------
+.MODEL M1MIDX D IS=1P XTI=0 EG=0
+.MODEL         SW_IN VSWITCH Roff=1 Ron=1e6 Voff=0.0V Von=100u
+.MODEL         SW_UNREG VSWITCH Roff=1e6 Ron=1.0 Voff=0.0V Von=25u
+.MODEL         SSH1_MODEL VSWITCH Roff=0.01U Ron=1e6 Voff=400m Von=430m
+
+* SPECTRE: + IMAX=1000 MINR=0.001
+
+.ENDS LP2951
+*$ End of Model LP2951 *************************************************
+*-----------------------------------------------------------------------------
+* created using Parts release 7.1p on 08/29/96 at 16:15
+*
+* connections:     input
+*                  |  adjustment pin
+*                  |  |   output
+*                  |  |   |
+.SUBCKT LM317     IN ADJ OUT
+*
+* POSITIVE ADJUSTABLE VOLTAGE REGULATOR
+*
+JADJ IN ADJ ADJ JADJMOD	;ADJUSTMENT PIN CURRENT
+VREF 4 ADJ 1.250
+DBK IN 13 DMOD
+*
+* ZERO OF RIPPLE REJECTION
+*
+*
+*
+CBC 13 15 800.0E-12
+RBC 15 5 1.000E3
+*
+QPASS 13 5 OUT QPASSMOD
+RB1 7 6 1
+RB2 6 5 128.3
+*
+* CURRENT LIMITING
+*
+DSC 6 11 DMOD
+ESC 11 OUT VALUE={5.646-.6667*V(6,5)*V(13,5)}
+*
+* FOLDBACK CURRENT
+*
+DFB 6 12 DMOD
+EFB 12 OUT VALUE={8.822-.4024*V(13,5)+5.250E-3*V(13,5)*V(13,5)
++ -.6667*V(13,5)*V(6,5)}
+*
+EB 7 OUT 8 OUT 6.939
+*
+* ZERO OF OUTPUT IMPEDANCE
+*
+RP 9 8 100
+CPZ 10 OUT 3.183E-6
+*
+DPU 10 OUT DMOD	;POWER-UP CLAMPLING DIODE
+RZ 8 10 .1
+EP 9 OUT 4 OUT 100
+RI OUT 4 100MEG
+*
+.MODEL QPASSMOD NPN (IS=30F BF=50 VAF=1.500 NF=1.701)
+.MODEL JADJMOD NJF (BETA=50.00E-6 VTO=-1)
+.MODEL DMOD D (IS=30F N=1.701)
+.ENDS
+*$
+
+*$ *********************************************************************
+* Model of Voltage Regulator TPS7133Q
+* Added on 12 Nov 2002 by sjaiswal
+* PIN ORDER: GND ENABLE IN OUT PG SENSE
+.SUBCKT TPS7133Q 1 EN 21 OUT PG SENSE
++PARAMS:
++ VR=3.3013
++ TC1VR=-92U
++ TC2VR=-1.28U
++ LINREG=32.05m
++ LDREG=1.621
++ IB=285U
++ VDMIN=0.0045
++ VD1=0.2168
++ IVD1=500M
++ TC1VD=-2.86M
++ TC2VD=3.67U
++ IMAX=1.2
++ VMAIP=10
++ M1ILIM=35M
++ M2ILIM=0
++ TC1IMAX=-5.76M
++ TC2IMAX=7.14U
++ RT=10K
++ CT=1P
+
+.PARAM RREF = {100*VR}
+.PARAM KLINE = {LINREG/100}
+.PARAM AV = {10000}
+.PARAM RO = {1E+06}
+.PARAM KLOAD = {AV*(LDREG/100)*VR}
+.PARAM RBP = {(RO/KLOAD)-1}
+.PARAM RADJ = {VR/IB}
+.PARAM RDROP = {10000*IVD1/(VD1-VDMIN)}
+.PARAM RSENSE = {0.1}
+.PARAM KVD = {-10000/RSENSE}
+.PARAM M1 = {-1*ABS(M1ILIM)}
+.PARAM INTERCEPT = {(-M1*VMAIP)+(M2ILIM*VMAIP*VMAIP)}
+.PARAM LINEAR = {(M1-2*VMAIP*M2ILIM)}
+.PARAM GILIMMAX = {IMAX*100}
+.PARAM GILIM2 = {-30/RSENSE}
+.PARAM IBMAX = {0.01}
+.PARAM GO = {1/RO}
+.PARAM VIBM = {IBMAX/GO}
+.PARAM GAIN1 = {AV/100000}
+
+C1         0 32  .46P
+CC13         14 0  1N
+CC14         7 0  1N
+CC15         13 2  {CT}
+CC16         2 10  150P
+DD28         14 18 D1N4376
+DD29         12 5 D1N4376
+DD30         15 11 D1N4376 OFF
+DD31         0 20 D1N4376 OFF
+DD32         0 7 D1N4376 OFF
+DD33         21 15 D1N4376 OFF
+DD34         5 9 D1N4376
+DD35         2 16 D1N4376
+DD36         2 7 D1N4376 OFF
+EV26         18 0 VALUE { V(17, 0) *{GILIMMAX} }
+EV27         19 0 3 0 10M
+GI17         0 20 21 22 1
+GI18         0 20 VALUE { V(8, 0) * {-VDMIN} }
+GI19         10 15 2 10 -1
+GI20         0 7 14 0 300M
+GI21         0 16 VALUE { V(10, 22) * {KVD} }
+GI22         0 7 VALUE { V(10, 22) * {GILIM2} }
+GI23         0 3 VALUE { V(21, 22) * {KLINE} }
+GI24         0 14 VALUE { {INTERCEPT}+{LINEAR}*V(21,22)+V(18,0)*{10M}+
++ {M2ILIM}*V(21,22)*V(21,22) }
+GRES1         0 PG POLY(2) 30 0 25 0 .215 0 0 0 0.2
+GV2         0 5 19 22 100M
+GV3         0 2 VALUE { V(5, 0) * {GO} }
+GV5         0 16 20 0 1
+II40         0 17 DC 1M
+II41         0 8 DC 1M
+II42         0 3 DC 1
+R6         0 OUT  100
+RFB1         24 SENSE  420K
+RFB2         0 24  233K
+RR43         10 2  {RBP}
+RR44         0 14  100
+RR45         0 7  100
+RR46         0 17  1K
+RR47         22 10  {RSENSE}
+RR48         0 20  {RDROP}
+RR51         0 8  1K
+RR52         0 3  {RREF}
+RR53         0 16  1
+RR54         0 5  100K
+RR55         22 52  {RADJ}
+RR56         13 21  {RT}
+RRES1         0 25  1k
+RRES3         0 30  1K
+RRES5         0 PG  1
+RV1         EN 32  100000K
+REN EN 0 769.2E6
+VREF         23 0 1.12
+VRES1         31 0 5V
+VRES2         222 0 5
+VV37         0 12 {VIBM}
+VV38         11 10 6
+VV39         9 0 {VIBM}
+SSEN1    OUT 22 32 0  SEN1
+SRES1     30 31 EN 0 SRES1
+SRES2    25 222  23 24  SRES2
+SSQ1         52 1 32 0 SQ1
+.MODEL        SQ1 VSWITCH Roff=.0001 Ron=6.59e6 Voff=.44V Von=1.9V
+.MODEL         SEN1 VSWITCH ROFF=0.01 RON=1E6 VOFF=.44 VON=1.9
+.MODEL         SRES2 VSWITCH ROFF=1 RON=1E6 VOFF=0 VON=100U
+.MODEL         SRES1 VSWITCH ROFF=1 RON=1E6 VOFF=.5 VON=2.3
+.MODEL D1N4376 D IS=1P XTI=0 EG=0
+
+.ENDS TPS7133Q
+*$ End of model TPS7133Q *********************************************
+
+
+*$ *******************************************************************
+* Model of Voltage Regulator TPS7333Q
+* Added on 12 Nov 2002 by sjaiswal
+* PIN ORDER: GND ENABLE IN OUT RESET SENSE
+
+.SUBCKT TPS7333Q 1 EN 21 OUT RESET SENSE
++PARAMS:
++ VR=3.3009
++ TC1VR=-92U
++ TC2VR=-1.28U
++ LINREG=32.05m
++ LDREG=1.621
++ IB=340U
++ VDMIN=0.0045
++ VD1=219m
++ IVD1=500M
++ TC1VD=-2.86M
++ TC2VD=3.67U
++ IMAX=1.2
++ VMAIP=10
++ M1ILIM=35M
++ M2ILIM=0
++ TC1IMAX=-5.76M
++ TC2IMAX=7.14U
++ RT=10K
++ CT=1P
+.PARAM RREF = {100*VR}
+.PARAM KLINE = {LINREG/100}
+.PARAM AV = {10000}
+.PARAM RO = {1E+06}
+.PARAM KLOAD = {AV*(LDREG/100)*VR}
+.PARAM RBP = {(RO/KLOAD)-1}
+.PARAM RADJ = {VR/IB}
+.PARAM RDROP = {10000*IVD1/(VD1-VDMIN)}
+.PARAM RSENSE = {0.1}
+.PARAM KVD = {-10000/RSENSE}
+.PARAM M1 = {-1*ABS(M1ILIM)}
+.PARAM INTERCEPT = {(-M1*VMAIP)+(M2ILIM*VMAIP*VMAIP)}
+.PARAM LINEAR = {(M1-2*VMAIP*M2ILIM)}
+.PARAM GILIMMAX = {IMAX*100}
+.PARAM GILIM2 = {-30/RSENSE}
+.PARAM IBMAX = {0.01}
+.PARAM GO = {1/RO}
+.PARAM VIBM = {IBMAX/GO}
+.PARAM GAIN1 = {AV/100000}
+
+C1         0 32  .46P
+CC13         14 0  1N
+CC14         7 0  1N
+CC15         13 2  {CT}
+CC16         2 10  150P
+CRES1         0 27  100U
+DD28         14 18 M1MIDX
+DD29         12 5 M1MIDX
+DD30         15 11 M1MIDX OFF
+DD31         0 20 M1MIDX OFF
+DD32         0 7 M1MIDX OFF
+DD33         21 15 M1MIDX OFF
+DD34         5 9 M1MIDX
+DD35         2 16 M1MIDX
+DD36         2 7 M1MIDX OFF
+DRES1         27 25 M1MIDX
+DRES2         25 26 M1MIDX
+EV26         18 0 VALUE { V(17, 0) *{GILIMMAX} }
+EV27         19 0 3 0 10M
+GI17         0 20 21 22 1
+GI18         0 20 VALUE { V(8, 0) * {-VDMIN} }
+GI19         10 15 2 10 -1
+GI20         0 7 14 0 300M
+GI21         0 16 VALUE { V(10, 22) * {KVD} }
+GI22         0 7 VALUE { V(10, 22) * {GILIM2} }
+GI23         0 3 VALUE { V(21, 22) * {KLINE} }
+GI24         0 14 VALUE { {INTERCEPT}+{LINEAR}*V(21,22)+V(18,0)*{10M}+
++ {M2ILIM}*V(21,22)*V(21,22) }
+GRES1         0 RESET POLY(2) 30 0 28 0 0 0 0 0 0.2
+GV2         0 5 19 22 100M
+GV3         0 2 VALUE { V(5, 0) * {GO} }
+GV5         0 16 20 0 1
+II40         0 17 DC 1M
+II41         0 8 DC 1M
+II42         0 3 DC 1
+R6         0 OUT  100
+RFB1         24 SENSE  420K
+RFB2         0 24  233K
+RR43         10 2  {RBP}
+RR44         0 14  100
+RR45         0 7  100
+RR46         0 17  1K
+RR47         22 10  {RSENSE}
+RR48         0 20  {RDROP}
+RR51         0 8  1K
+RR52         0 3  {RREF}
+RR53         0 16  1
+RR54         0 5  100K
+RR55          22  52 {RADJ}
+RR56         13 21  {RT}
+RRES1         0 25  100
+RRES2         26 27  1.1K
+RRES3         0 30  1K
+RRES4         0 28  1K
+RRES5         0 RESET  1
+RV1         EN 32  100000K
+VREF         23 0 1.12
+VRES1         31 0 5V
+VRES2         222 0 5
+VRES3         29 0 5
+VV37         0 12 {VIBM}
+VV38         11 10 9
+VV39         9 0 {VIBM}
+SSEN1    OUT 22 32 0  SEN1
+SRES1     30 31 EN 0 SRES1
+SRES2    25 222  23 24  SRES2
+SRES3    28 29 27 0  SRES3
+SADJ         52 1 32 0 SQ1
+.MODEL        SQ1 VSWITCH Roff=.0001 Ron=6.59e6 Voff=.44V Von=1.9V
+.MODEL         SEN1 VSWITCH ROFF=0.01 RON=1E6 VOFF=.44 VON=1.9
+.MODEL         SRES2 VSWITCH ROFF=1 RON=1E6 VOFF=0 VON=100U
+.MODEL         SRES1 VSWITCH ROFF=1 RON=1E6 VOFF=.5 VON=2.3
+.MODEL         SRES3 VSWITCH ROFF=1E6 RON=1.0 VOFF=3.78 VON=3.8
+.MODEL M1MIDX D IS=1P XTI=0 EG=0
+
+.ENDS TPS7333Q
+*$ End of Model TPS7333Q **********************************************
+*$
+*
+* MANUFACTURERS PART NO.= SG137A   (SILICON GENERAL)
+* SUBTYPE: REGULATOR
+* THIS FILE CONTAINS A PRE-RAD TEMPERATURE DEPENDENT MACROMODEL OF THE
+* SG137A.
+*
+* PLEASE NOTE THE FOLLOWING:
+*
+* THIS MODEL CAN BE USED FROM -55 C TO 125 C WITH THE .TEMP
+* STATEMENT.  IT INCLUDES POWER-UP AND POWER-DOWN EFFECTS.    IT IS
+* NECESSARY TO SET ITL1=300  ITL2=300 WITH THE .OPTIONS COMMAND FOR 100%
+* CONVERGENCE.  THESE  SETTINGS DETERMINE THE NUMBER OF ITERATIONS
+* ALLOW FOR THE  CALCULATION OF THE DC AND BIAS PT VALUES WHEN THE
+* STARTING POINT  IS CONSIDERED "BLIND" OR AN "EDUCATED GUESS".
+* OTHER SETTINGS MAY WORK, BUT HAVE NOT BEEN TESTED YET.
+*
+* RIPPLE REJECTION, OUTPUT IMPEDANCE, QUIESCENT CURRENT, LINE
+* TRANSIENT, DROPOUT, AND LOAD TRANSIENT RESPONSE ARE MODELED BASED
+* ON LABORATORY MEASUREMENTS.  THE CORRELATION IS QUITE GOOD.
+* CURRENT LIMITING AND ADJUSTMENT CURRENT BASED ON DATA SHEET
+* INFORMATION ARE MODELED ACCURATELY.
+*
+*
+*------------------------------------------------------------------
+*
+*
+*
+.SUBCKT SG137   1  2   3   100
+*               |  |   |    |
+*              ADJ |   |    |
+*                 OUT  |    |
+*                     IN    |
+*                          GND(REFERNCE)
+*** VOLTAGE REFERENCE SECTION ***
+LR 1 4 IND1 0.2709
+.MODEL IND1 IND(
++          L = 1
++        IL1 = 0
++        IL2 = 0
++        TC1 = 7.8864E-4
++        TC2 = -2.8391E-5
++ )
+RR 4 5 98.2994 TC=-0.0063, 6.2251E-5
+CR 1 6 3P
+RCR 6 7 150K
+DZR 7 5 DZR
+.MODEL DZR D (
++         IS = 1E-14
++         RS = 0
++          N = 1
++         TT = 0
++        CJO = 0.1P
++         VJ = 1
++          M = .5
++         EG = 1.11
++        XTI = 3
++         KF = 0
++         AF = 1
++         FC = .5
++         BV = 1.25
++        IBV = 1E-10
++        ISR = 0
++         NR = 2
++        IKF = 9.9999E+13
++        NBV = 0.0001
++       IBVL = 0
++       NBVL = 1
++       TIKF = 0
++       TBV1 = 2.2444E-6
++       TBV2 = 6.5556E-8
++       TRS1 = 0
++       TRS2 = 0
++ )
+RZR 7 5 1MEG
+DZ1 8 7 DZ1
+.MODEL DZ1 D(
++         IS = 1E-14
++         RS = 1
++          N = 1
++         TT = 0
++        CJO = 1P
++         VJ = 1
++          M = .5
++         EG = 1.11
++        XTI = 3
++         KF = 0
++         AF = 1
++         FC = .5
++         BV = 1
++        IBV = 1E-10
++        ISR = 0
++         NR = 2
++        IKF = 9.9999E+13
++        NBV = 0.0001
++       IBVL = 0
++       NBVL = 1
++       TIKF = 0
++       TBV1 = -0.002847
++       TBV2 = 3.4722E-6
++       TRS1 = 0
++       TRS2 = 0
++ )
+RQ 8 3 1.7546MEG TC=4.5212E-4,5.6515E-6
+*** QUIESCENT CURRENT SECTION ***
+FQ  1 3 VQ1 0.0625M
+EQ1 24 100 1 7 1
+VQ1 24 25 DC 0
+RQ1 25 100 1 TC=-3.9528E-4,-1.1597E-5
+*** ERROR AMPLIFIER ***
+RIN 7 23 100K
+E1  11 3 23 7 600
+ROE1 9 11 10
+D+ 9 13 DC
+V+ 14 3 -1
+E+ 13 14 1 3 1
+.MODEL DC D(
++         IS = 1E-14
++         RS = 0
++          N = 1
++         TT = 0
++        CJO = 10P
++         VJ = 1
++          M = .5
++         EG = 1.11
++        XTI = 3
++         KF = 0
++         AF = 1
++         FC = .5
++         BV = 9.9999E+13
++        IBV = 1E-10
++        ISR = 0
++         NR = 2
++        IKF = 9.9999E+13
++        NBV = 1
++       IBVL = 0
++       NBVL = 1
++       TIKF = 0
++       TBV1 = 0
++       TBV2 = 0
++       TRS1 = 0
++       TRS2 = 0
++ )
+D- 12 9 DC
+V- 12 3 DC 1
+RP 9 10 151
+CP 10 3 0.01U
+E2 15 3 10 3 1
+***
+RB1 15 16 50
+RB2 16 19 500 TC=-1.9327E-4,3.3434E-6
+*** SHORT CIRCUIT AND FOLDBACK CURRENT SECTION ***
+DSC 16 17 DMOD
+ESC 17 3 POLY(1),(2,3) 2.447 -0.01
+DFB 16 18 DMOD
+EFB 18 3 POLY(1),(2,3) 12.5955 -1.2275 0.0457 -5.9169E-4
+***
+QP 20 19 3 QMOD
+.MODEL QMOD NPN(
++         IS = 1E-14
++         BF = 500
++         NF = 1
++        VAF = 9.9999E+13
++        IKF = 9.9999E+13
++        ISE = 0
++         NE = 1.5
++         BR = 1
++         NR = 1
++        VAR = 9.9999E+13
++        IKR = 9.9999E+13
++        ISC = 0
++         NC = 2
++         RB = 0
++        IRB = 9.9999E+13
++        RBM = 0
++         RE = 0
++         RC = 0
++        CJE = 0
++        VJE = .75
++        MJE = .33
++         TF = 0
++        XTF = 0
++        VTF = 9.9999E+13
++        ITF = 0
++        PTF = 0
++        CJC = 0
++        VJC = .75
++        MJC = .33
++       XCJC = 1
++         TR = 0
++        CJS = 0
++        VJS = .75
++        MJS = 0
++        XTB = 0
++         EG = 1.11
++        XTI = 3
++         KF = 0
++         AF = 1
++         FC = .5
++         NK = .5
++        ISS = 0
++         NS = 1
++        QCO = 0
++        RCO = 0
++         VO = 10
++      GAMMA = 1E-11
++       TRE1 = 0
++       TRE2 = 0
++       TRB1 = 0
++       TRB2 = 0
++       TRM1 = 0
++       TRM2 = 0
++       TRC1 = 0
++       TRC2 = 0
++ )
+*** DROPOUT VOLTAGE SECTION ***
+RDO 23 22 0.1
+DDO1 22 21 DDO
+DDO2 21 20 DDO
+.MODEL DDO D(
++         IS = 1E-14
++         RS = 0
++          N = 0.9687
++         TT = 0
++        CJO = 0
++         VJ = 1
++          M = .5
++         EG = 1.11
++        XTI = 3
++         KF = 0
++         AF = 1
++         FC = .5
++         BV = 9.9999E+13
++        IBV = 1E-10
++        ISR = 0
++         NR = 2
++        IKF = 9.9999E+13
++        NBV = 1
++       IBVL = 0
++       NBVL = 1
++       TIKF = 0
++       TBV1 = 0
++       TBV2 = 0
++       TRS1 = 0
++       TRS2 = 0
++ )
+***
+RO 23 2 0.0017 TC=-0.07894, 0.001136
+DDIS 3 23 DDIS
+.MODEL DDIS D(
++         IS = 1E-14
++         RS = 0
++          N = 1
++         TT = 0
++        CJO = 1PF
++         VJ = 1
++          M = .5
++         EG = 1.11
++        XTI = 3
++         KF = 0
++         AF = 1
++         FC = .5
++         BV = 9.9999E+13
++        IBV = 1E-10
++        ISR = 0
++         NR = 2
++        IKF = 9.9999E+13
++        NBV = 1
++       IBVL = 0
++       NBVL = 1
++       TIKF = 0
++       TBV1 = 0
++       TBV2 = 0
++       TRS1 = 0
++       TRS2 = 0
++ )
+.MODEL DMOD D(
++         IS = 1E-14
++         RS = 0
++          N = 1
++         TT = 0
++        CJO = 0
++         VJ = 1
++          M = .5
++         EG = 1.11
++        XTI = 3
++         KF = 0
++         AF = 1
++         FC = .5
++         BV = 9.9999E+13
++        IBV = 1E-10
++        ISR = 0
++         NR = 2
++        IKF = 9.9999E+13
++        NBV = 1
++       IBVL = 0
++       NBVL = 1
++       TIKF = 0
++       TBV1 = 0
++       TBV2 = 0
++       TRS1 = 0
++       TRS2 = 0
++ )
+.ENDS SG137
+*$
+*
+* MANUFACTURERS PART NO.= SG137A   (SILICON GENERAL)
+* SUBTYPE: REGULATOR
+* THIS FILE CONTAINS A PRE-RAD 27 C TEMP. MACROMODEL
+*
+*-------------------------------------------------------------------
+*  PLEASE NOTE THE FOLLOWING:
+* 1)  THIS MODEL IS TO BE USED FOR ROOM TEMPERATURE SIMULATIONS.
+*     THE BUILT-IN SPICE TEMPERATURE CORRECTIONS WILL NOT WORK.
+* 2)  RIPPLE REJECTION, OUTPUT IMPEDANCE, QUIESCENT CURRENT,
+*     LINE TRANSIENT, AND LOAD TRANSIENT RESPONSE ARE MODELED
+*     BASED ON LABORATORY MEASUREMENTS.  THE CORRELATION IS
+*     QUITE GOOD.
+* 3)  CURRENT LIMITING AND ADJUSTMENT CURRENT BASED ON DATA
+*     SHEET INFORMATION ARE MODELED ACCURATELY.
+* 4)  DROPOUT AND POWER UP CHARACTERISTICS HAVE NOT BEEN
+*     DEVELOPED YET IN THIS MODEL.
+* 5)  FOR FURTHER DETAILS AND THE MODEL DERIVATION, OBTAIN
+*     A COPY OF "CA3085, LM7805, LM7812, LM7905, LM137 MACROMODEL
+*     DEVELOPMENT" BY G. M. WIERZBA DATED 03/25/91.
+*
+*
+*
+.SUBCKT SG137/27C   1   2   3
+*                   |   |   |
+*                  IN   |   |
+*                      OUT  |
+*                          ADJ
+RR     3 12 2250
+DZR    13 12 DZR
+.MODEL DZR D (
++         IS = 1E-14
++         RS = 0
++          N = 1
++         TT = 0
++        CJO = 0
++         VJ = 1
++          M = .5
++         EG = 1.11
++        XTI = 3
++         KF = 0
++         AF = 1
++         FC = .5
++         BV = 1.25
++        IBV = .001
++ )
+RDZR   3 13 100MEG
+D1     14 13 D1
+.MODEL D1 D (
++         IS = 1E-14
++         RS = 0
++          N = 1
++         TT = 0
++        CJO = 0
++         VJ = 1
++          M = .5
++         EG = 1.11
++        XTI = 3
++         KF = 0
++         AF = 1
++         FC = .5
++         BV = 0.8
++        IBV = .001
++ )
+RD1    14 1 14MEG
+GQ     4 1 3 13 0.052M
+EREF   4 3 13 3 1
+RIN    4 20 100MEG
+E1     50 1 20 5 600
+RCLAMP 5 50 10
+EC     51 1 3 1 0.1
+DCLAMP 51 5 DCLAMP
+.MODEL DCLAMP D(
++         IS = 1E-14
++         RS = 0
++          N = 1
++         TT = 0
++        CJO = 0
++         VJ = 1
++          M = .5
++         EG = 1.11
++        XTI = 3
++         KF = 0
++         AF = 1
++         FC = .5
++         BV = 9.9999E+13
++        IBV = .001
++ )
+R1     5 6 156
+RPZ    6 11 1000
+C1     11 1 0.5U
+E2     7 1 6 1 1
+RB1    7 17 25
+RB2    17 8 50
+DLIMIT 17 18 DMOD
+ELIMIT 18 1 POLY(1),(2,1) 0.24 -0.0024
+DFLDBCK 17 19 DMOD
+EFLDBCK 19 1 POLY(1),(2,1) 1.0611 -0.0912 0.0026 -2.5E-5
+CBC    8 9 0.01U
+RBC    9 23 10
+QPASS  23 8 1 QMOD
+RC     20 21 0.5
+DC     21 22 DC
+DO     22 23 DC
+.MODEL DC D (
++         IS = 1E-14
++         RS = 0
++          N = 1.250
++         TT = 0
++        CJO = 0
++         VJ = 1
++          M = .5
++         EG = 1.11
++        XTI = 3
++         KF = 0
++         AF = 1
++         FC = .5
++         BV = 9.9999E+13
++        IBV = .001
++ )
+RO     20 2 0.00001
+.MODEL QMOD NPN (
++         IS = 1E-16
++         BF = 500
++         NF = 1
++        VAF = 150
++        IKF = 9.9999E+13
++        ISE = 0
++         NE = 1.5
++         BR = 1
++         NR = 1
++        VAR = 9.9999E+13
++        IKR = 9.9999E+13
++        ISC = 0
++         NC = 2
++         RB = 0
++        IRB = 9.9999E+13
++        RBM = 0
++         RE = 0
++         RC = 0
++        CJE = 0
++        VJE = .75
++        MJE = .33
++         TF = 0
++        XTF = 0
++        VTF = 9.9999E+13
++        ITF = 0
++        PTF = 0
++        CJC = 0
++        VJC = .75
++        MJC = .33
++       XCJC = 1
++         TR = 0
++        CJS = 0
++        VJS = .75
++        MJS = 0
++        XTB = 0
++         EG = 1.11
++        XTI = 3
++         KF = 0
++         AF = 1
++         FC = .5
++ )
+.MODEL DMOD D(
++         IS = 1E-14
++         RS = 0
++          N = 1
++         TT = 0
++        CJO = 0
++         VJ = 1
++          M = .5
++         EG = 1.11
++        XTI = 3
++         KF = 0
++         AF = 1
++         FC = .5
++         BV = 9.9999E+13
++        IBV = .001
++ )
+.ENDS SG137/27C
+*$
+*
+*---------------------------------------------------------------SG723C
+.SUBCKT SG723C 2 3 4 5 6 7 9 10 11 12 13
+*
+   x1 2 3 4 5 6 7 9 10 11 12 13 LM723
+*
+* the SG723C is identical to the LM723,
+* but with a more limited temperature range
+*
+.ENDS
+*$
+
+*
+* MANUFACTURERS PART NO. = LM137HVH  (NATIONAL SEMICONDUCTOR)
+* SUBTYPE: REGULATOR
+*
+* THIS FILE CONTAINS A PRE-RAD MODEL AT 27 C OF THE  LM137HVH THAT WAS
+* DEVELOPED UNDER THE GUIDANCE OF GREGORY M. WIERZBA AT
+* MICHIGAN STATE UNIVERSITY.
+*
+* PLEASE NOTE THE FOLLOWING:
+*
+*   1) THIS MODEL IS TO BE USED FOR ROOM TEMPERATURE SIMULATIONS. THE BUILT-
+*       IN  SPICE TEMPERATURE CORRECTIONS WILL NOT WORK.
+*   2) RIPPLE REJECTION, OUTPUT IMPEDANCE, LINE TRANSIENT, AND LOAD
+*       TRANSIENT RESPONSE ARE MODELED BASED ON LABORATORY
+*       MEASUREMENTS.  THE CORRELATION IS QUITE GOOD. THE SIMULATION VALUES
+*       ARE WITHIN THE PRODUCT SPEC LIMITS.
+*   3) CURRENT LIMITING AND ADJUSTMENT CURRENT BASED ON DATA SHEET
+*       INFORMATION ARE MODELED ACCURATELY.
+*   4) DROPOUT AND POWER UP CHARACTERISTICS HAVE NOT BEEN DEVELOPED YET
+*       IN THIS  MODEL.
+*   5) FOR FURTHER DETAILS AND THE MODEL DERIVATION, OBTAIN A COPY OF
+*      "CA3085,  LM7805, LM7812, LM7905, LM137 MACROMODEL DEVELOPMENT" BY G. M.
+*        WIERZBA  DATED 3/25/91.
+*
+*
+*
+.SUBCKT LM137HVH  1  2  3
+*                IN  |  |
+*                   OUT |
+*                      ADJ
+*
+VREF   12  4  DC 1.25
+EREG   3  12  1  2  0.0001981
+IBIAS  4  1  DC 65U
+RIN    4  20 100MEG
+E1     5  1  20  4  600
+R1     5  6  1561
+RPZ    6  11  0.01
+C1     11 1  1U
+E2     7  1  6  1  1
+RB1    7  17  25
+RB2    17  8  50
+DLIMIT 17  18  DMOD
+ELIMIT 18  1  POLY (1)  (2,1) .24  -0.0024
+DFLDBCK 17  19   DMOD
+EFLDBCK  19  1  POLY(1)  (2,1)  1.0611 -0.0912  0.0026  -2.5E-5
+CBC     8  9  1U
+RBC     9  20  1561
+QPASS   20  8  1  QMOD
+RBOND   20  2  0.0063
+.MODEL QMOD NPN(
++         IS = 1E-16
++         BF = 500
++         NF = 1
++        VAF = 150
++        IKF = 9.9999E+13
++        ISE = 0
++         NE = 1.5
++         BR = 1
++         NR = 1
++        VAR = 9.9999E+13
++        IKR = 9.9999E+13
++        ISC = 0
++         NC = 2
++         RB = 0
++        IRB = 9.9999E+13
++        RBM = 0
++         RE = 0
++         RC = 0
++        CJE = 0
++        VJE = .75
++        MJE = .33
++         TF = 0
++        XTF = 0
++        VTF = 9.9999E+13
++        ITF = 0
++        PTF = 0
++        CJC = 0
++        VJC = .75
++        MJC = .33
++       XCJC = 1
++         TR = 0
++        CJS = 0
++        VJS = .75
++        MJS = 0
++        XTB = 0
++         EG = 1.11
++        XTI = 3
++         KF = 0
++         AF = 1
++         FC = .5
++ )
+.MODEL DMOD D(
++         IS = 1E-15.9
++         RS = 0
++          N = 1
++         TT = 0
++        CJO = 0
++         VJ = 1
++          M = .5
++         EG = 1.11
++        XTI = 3
++         KF = 0
++         AF = 1
++         FC = .5
++         BV = 9.9999E+13
++        IBV = .001
++ )
+.ENDS LM137HVH
+*$
+*
+* MANUFACTURERS PART # = F78M12HM
+* SUBTYPE: REGULATOR
+* THIS FILE CONTAINS A TEMPERATURE DEPENDENT MODEL OF THE F78M12
+* REGULATOR.
+*
+*
+*------------------------------------------------------------------------------
+*
+*
+* THIS MODEL CAN BE USED FROM -55 C TO 125 C WITH THE .TEMP STATEMENT.  IT
+* INCLUDES POWER-UP AND POWER-DOWN EFFECTS.
+* IT IS NECESSARY TO SET ITL1=300 ITL2=300 WITH THE .OPTIONS COMMAND FOR
+* 100%  CONVERGENCE.  THESE SETTINGS DETERMINE THE NUMBER OF ITERATIONS
+* ALLOWED FOR  THE CALCULATION OF THE DC AND BIAS PT VALUES WHEN THE
+* STARTING POINT IS  CONSIDERED "BLIND" OR AN "EDUCATED GUESS".
+* OTHER SETTINGS MAY WORK, BUT HAVE NOT BEEN TESTED YET.
+*
+.SUBCKT F78M12  1  2   3
+*               |  |   |
+*              IN  |   |
+*                 OUT  |
+*                     GND
+*
+*** VOLTAGE REFERENCE AND BIAS CURRENT SECTION ***
+DZ1  4 1 DZ1
+.MODEL DZ1 D (
++         IS = 1E-14
++         RS = 0
++          N = 1
++         TT = 0
++        CJO = 0
++         VJ = 1
++          M = .5
++         EG = 1.11
++        XTI = 3
++         KF = 0
++         AF = 1
++         FC = .5
++         BV = 0.75
++        IBV = 1E-10
++        ISR = 0
++         NR = 2
++        IKF = 9.9999E+13
++        NBV = 0.01
++       IBVL = 0
++       NBVL = 1
++       TIKF = 0
++       TBV1 = -0.003611
++       TBV2 = 6.9444E-5
++       TRS1 = 0
++       TRS2 = 0
++ )
+RQ   4 17 86343.84 TC=5.3597E-4, 5.0408E-5
+RR   17 18 5.2447 TC=0.005772, 6.2073E-5
+DZR   16 18 DR
+.MODEL DR D (
++         IS = 1E-14
++         RS = 0
++          N = 1
++         TT = 0
++        CJO = 0
++         VJ = 1
++          M = .5
++         EG = 1.11
++        XTI = 3
++         KF = 0
++         AF = 1
++         FC = .5
++         BV = 1.2588
++        IBV = 1E-10
++        ISR = 0
++         NR = 2
++        IKF = 9.9999E+13
++        NBV = 0.01
++       IBVL = 0
++       NBVL = 1
++       TIKF = 0
++       TBV1 = 3.82E-5
++       TBV2 = -8.5068E-7
++       TRS1 = 0
++       TRS2 = 0
++ )
+RZ 16 18 1MEG
+L1 16 3 IND1 0.3573M
+.MODEL IND1 IND(
++          L = 1
++        IL1 = 0
++        IL2 = 0
++        TC1 = 0.001123
++        TC2 = 6.8566E-5
++ )
+*** ERROR AMPLIFIER SECTION ***
+EA 22 3 17 15 300
+ROUT 22 6 10
+D- 3 6 DCLAMP
+D+ 6 19 DCLAMP
+.MODEL DCLAMP D  (
++         IS = 1E-14
++         RS = 0
++          N = 1
++         TT = 0
++        CJO = 0
++         VJ = 1
++          M = .5
++         EG = 1.11
++        XTI = 3
++         KF = 0
++         AF = 1
++         FC = .5
++         BV = 9.9999E+13
++        IBV = 1E-10
++        ISR = 0
++         NR = 2
++        IKF = 9.9999E+13
++        NBV = 1
++       IBVL = 0
++       NBVL = 1
++       TIKF = 0
++       TBV1 = 0
++       TBV2 = 0
++       TRS1 = 0
++       TRS2 = 0
++ )
+V+ 19 23 DC -1
+E+ 23 3 1 3 1
+RP 6 7 500
+CP 7 3 CAP1 0.1U
+.MODEL CAP1 CAP(
++          C = 1
++        VC1 = 0
++        VC2 = 0
++        TC1 = -0.002
++        TC2 = 1E-4
++ )
+*** QUIESCENT CURRENT ***
+GB 1 9 17 3 0.4944M
+RQUIES 12 3 10572.61 TC=0.013985, 1.28953E-4
+*** SHORT CIRCUIT AND FOLDBACK CURRENT ***
+DBL 9 8 DBL
+.MODEL DBL D(
++         IS = 1E-4
++         RS = 0
++          N = 1
++         TT = 0
++        CJO = 0
++         VJ = 1
++          M = .5
++         EG = 0
++        XTI = 0
++         KF = 0
++         AF = 1
++         FC = .5
++         BV = 9.9999E+13
++        IBV = 1E-10
++        ISR = 0
++         NR = 2
++        IKF = 9.9999E+13
++        NBV = 1
++       IBVL = 0
++       NBVL = 1
++       TIKF = 0
++       TBV1 = 0
++       TBV2 = 0
++       TRS1 = 0
++       TRS2 = 0
++ )
+EB 8 3 7 3 2
+RC 1 14 0.2
+DC 14 13 DC
+.MODEL DC D(
++         IS = 1E-14
++         RS = 0
++          N = 1.6339
++         TT = 0
++        CJO = 0
++         VJ = 1
++          M = .5
++         EG = 1.11
++        XTI = 3
++         KF = 0
++         AF = 1
++         FC = .5
++         BV = 9.9999E+13
++        IBV = 1E-10
++        ISR = 0
++         NR = 2
++        IKF = 9.9999E+13
++        NBV = 1
++       IBVL = 0
++       NBVL = 1
++       TIKF = 0
++       TBV1 = 0
++       TBV2 = 0
++       TRS1 = 0
++       TRS2 = 0
++ )
+RB 9 11 100
+QP 13 11 5 QP
+.MODEL QP NPN(
++         IS = 1E-12
++         BF = 70K
++         NF = 1
++        VAF = 150
++        IKF = 9.9999E+13
++        ISE = 0
++         NE = 1.5
++         BR = 1
++         NR = 1
++        VAR = 9.9999E+13
++        IKR = 9.9999E+13
++        ISC = 0
++         NC = 2
++         RB = 0
++        IRB = 9.9999E+13
++        RBM = 0
++         RE = 0
++         RC = 0
++        CJE = 0
++        VJE = .75
++        MJE = .33
++         TF = 0
++        XTF = 0
++        VTF = 9.9999E+13
++        ITF = 0
++        PTF = 0
++        CJC = 0
++        VJC = .75
++        MJC = .33
++       XCJC = 1
++         TR = 0
++        CJS = 0
++        VJS = .75
++        MJS = 0
++        XTB = 0
++         EG = 1.11
++        XTI = 3
++         KF = 0
++         AF = 1
++         FC = .5
++         NK = .5
++        ISS = 0
++         NS = 1
++        QCO = 0
++        RCO = 0
++         VO = 10
++      GAMMA = 1E-11
++       TRE1 = 0
++       TRE2 = 0
++       TRB1 = 0
++       TRB2 = 0
++       TRM1 = 0
++       TRM2 = 0
++       TRC1 = 0
++       TRC2 = 0
++ )
+DCL 9 10 DCL
+.MODEL DCL D(
++         IS = 1E-4
++         RS = 0
++          N = 2
++         TT = 0
++        CJO = 0
++         VJ = 1
++          M = .5
++         EG = 1.11
++        XTI = 3
++         KF = 0
++         AF = 1
++         FC = .5
++         BV = 9.9999E+13
++        IBV = 1E-10
++        ISR = 0
++         NR = 2
++        IKF = 9.9999E+13
++        NBV = 1
++       IBVL = 0
++       NBVL = 1
++       TIKF = 0
++       TBV1 = 0
++       TBV2 = 0
++       TRS1 = 0
++       TRS2 = 0
++ )
+QCL 10 20 12 QCL
+.MODEL QCL NPN(
++         IS = 1E-16
++         BF = 100
++         NF = 1
++        VAF = 9.9999E+13
++        IKF = 9.9999E+13
++        ISE = 0
++         NE = 1.5
++         BR = 1
++         NR = 1
++        VAR = 9.9999E+13
++        IKR = 9.9999E+13
++        ISC = 0
++         NC = 2
++         RB = 0
++        IRB = 9.9999E+13
++        RBM = 0
++         RE = 0
++         RC = 0
++        CJE = 0
++        VJE = .75
++        MJE = .33
++         TF = 0
++        XTF = 0
++        VTF = 9.9999E+13
++        ITF = 0
++        PTF = 0
++        CJC = 0
++        VJC = .75
++        MJC = .33
++       XCJC = 1
++         TR = 0
++        CJS = 0
++        VJS = .75
++        MJS = 0
++        XTB = 0
++         EG = 1.11
++        XTI = 3
++         KF = 0
++         AF = 1
++         FC = .5
++         NK = .5
++        ISS = 0
++         NS = 1
++        QCO = 0
++        RCO = 0
++         VO = 10
++      GAMMA = 1E-11
++       TRE1 = 0
++       TRE2 = 0
++       TRB1 = 0
++       TRB2 = 0
++       TRM1 = 0
++       TRM2 = 0
++       TRC1 = 0
++       TRC2 = 0
++ )
+RSC 5 12 0.6936 TC=0.00131, 1.2433E-5
+RBCL 20 5 200
+RFB 1 21 6.17043K TC=0.001143, -1.081421E-5
+DZFB 20 21 DZFB
+.MODEL DZFB D(
++         IS = 1E-14
++         RS = 0
++          N = 1
++         TT = 0
++        CJO = 0
++         VJ = 1
++          M = .5
++         EG = 1.11
++        XTI = 3
++         KF = 0
++         AF = 1
++         FC = .5
++         BV = 14.79
++        IBV = 1E-10
++        ISR = 0
++         NR = 2
++        IKF = 9.9999E+13
++        NBV = 0.01
++       IBVL = 0
++       NBVL = 1
++       TIKF = 0
++       TBV1 = -1.78236E-4
++       TBV2 = 4.2164E-6
++       TRS1 = 0
++       TRS2 = 0
++ )
+R24 15 3 600
+R23 12 15 5160
+*** OUTPUT RESISTANCE ***
+RO 12 2 0.02 TC=-8.3333E-4, -4.1667E-5
+DDIS 2 1 DMOD
+.MODEL DMOD D(
++         IS = 1E-14
++         RS = 0
++          N = 0.7
++         TT = 0
++        CJO = 0
++         VJ = 1
++          M = .5
++         EG = 1.11
++        XTI = 3
++         KF = 0
++         AF = 1
++         FC = .5
++         BV = 9.9999E+13
++        IBV = 1E-10
++        ISR = 0
++         NR = 2
++        IKF = 9.9999E+13
++        NBV = 1
++       IBVL = 0
++       NBVL = 1
++       TIKF = 0
++       TBV1 = 0
++       TBV2 = 0
++       TRS1 = 0
++       TRS2 = 0
++ )
+.ENDS F78M12
+*$
+*
+*---------------------------------------------------------------RC723
+.SUBCKT RC723 2 3 4 5 6 7 9 10 11 12 13
+*
+   x1 2 3 4 5 6 7 9 10 11 12 13 LM723
+*
+* the RC723 is identical to the LM723,
+* but with a more limited temperature range
+*
+.ENDS
+
+
+
+
+
+

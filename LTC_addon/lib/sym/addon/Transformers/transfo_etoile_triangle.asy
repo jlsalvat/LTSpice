@@ -1,0 +1,50 @@
+Version 4
+SymbolType CELL
+LINE Normal 25 -16 0 -16
+LINE Normal 38 -3 25 -16
+LINE Normal 28 32 0 32
+LINE Normal 27 80 1 80
+LINE Normal 37 73 27 80
+LINE Normal 64 42 64 16
+LINE Normal 82 61 64 42
+LINE Normal 64 42 82 61
+LINE Normal 45 64 64 42
+LINE Normal 175 -15 192 -15
+LINE Normal 161 -3 175 -15
+LINE Normal 168 32 193 32
+LINE Normal 168 80 192 80
+LINE Normal 157 73 168 80
+LINE Normal 120 48 136 17
+LINE Normal 155 48 120 48
+LINE Normal 136 17 155 48
+LINE Normal 64 112 64 42
+CIRCLE Normal 103 93 28 -24
+CIRCLE Normal 168 92 93 -25
+WINDOW 0 82 -36 Left 2
+WINDOW 123 103 114 Center 2
+SYMATTR Prefix X
+SYMATTR ModelFile addon\transfo_tri.lib
+SYMATTR Description Transo Etoile Triangle
+SYMATTR Value transfo_etoile_triangle
+SYMATTR Value2 m=1
+PIN 0 -16 NONE 8
+PINATTR PinName V1p
+PINATTR SpiceOrder 1
+PIN 0 32 NONE 0
+PINATTR PinName V2P
+PINATTR SpiceOrder 2
+PIN 0 80 NONE 0
+PINATTR PinName V3P
+PINATTR SpiceOrder 3
+PIN 64 112 NONE 8
+PINATTR PinName N
+PINATTR SpiceOrder 4
+PIN 192 -16 NONE 8
+PINATTR PinName V1S
+PINATTR SpiceOrder 5
+PIN 192 32 NONE 8
+PINATTR PinName V2S
+PINATTR SpiceOrder 6
+PIN 192 80 NONE 8
+PINATTR PinName V3S
+PINATTR SpiceOrder 7

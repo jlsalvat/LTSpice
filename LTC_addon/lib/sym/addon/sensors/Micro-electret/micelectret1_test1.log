@@ -1,0 +1,22 @@
+Circuit: * C:\Users\Jean Louis Salvat\Desktop\LTspiceIV\lib\sym\addon\sensors\Micro-electret\micelectret1_test1.asc
+
+Direct Newton iteration for .op point succeeded.
+
+Date: Sat Feb 16 21:06:38 2013
+Total elapsed time: 0.128 seconds.
+
+tnom = 27
+temp = 27
+method = modified trap
+totiter = 20053
+traniter = 20048
+tranpoints = 10025
+accept = 10024
+rejected = 1
+matrix size = 13
+fillins = 2
+solver = Normal
+Matrix Compiler1: 450 octet(s) object code size  0.5/0.3/[0.1]
+Matrix Compiler2: 923 octet(s) object code size  0.3/0.4/[0.2]
+
+

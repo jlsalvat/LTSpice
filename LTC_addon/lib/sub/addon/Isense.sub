@@ -1,0 +1,5 @@
+capt courant
+.subckt isense 1 2 3
+H1 3 0 V1 1
+V1 1 2 0
+.end

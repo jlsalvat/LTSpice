@@ -1,0 +1,54 @@
+
+*************************************************************************************************************
+*                                 commande THYRISTOR   COMMANDE PONT HAUT  POUR  PONT  TRIPHASE
+************************************************************************************************************
+* commande thyristor triphasé 50 Hz
+
+.SUBCKT Thyr_com3 P1 P2 P3 com1 n1 com2 n2 com3 N3 ton1={ton} alpha1={alpha}
+XU1 P3 P1 B1 opamp VCC=10 Aol=100K GBW=10Meg
+XU3 P1 P2 B2 opamp VCC=10 Aol=100K GBW=10Meg
+XU9 P2 P3 B3 opamp VCC=10 Aol=100K GBW=10Meg
+*retard b1 -> bd1
+E10 BD1  0 LAPLACE {V(b1)} {exp(-s*(5.556e-5*alpha1))}
+*monostable BD1 -> BM1
+A10 N1002 0 0 0 0 N1003 0 0 BUF
+A12 0 N1003 0 BD1 0 0 BM1 0 AND
+R12 BD1 0 1G
+R11 BM1 0 1G
+E11 N1002 0 LAPLACE {V(BD1)} {exp(-s*ton)}
+*la suite
+E1 N001 N1 BS1 0 10
+A1 0 BM1 0 VPULSE 0 0 BS1 0 AND
+V4 VPULSE 0 PULSE(0 10 0 0 0 50u 100u)
+R1 COM1 N002 200
+D1 N001 N002 D
+*retard
+E20 BD2  0 LAPLACE {V(b2)} {exp(-s*(5.556e-5*alpha1))}
+*monostable BD2 -> BM2
+A20 N2002 0 0 0 0 N2003 0 0 BUF
+A21 0 N2003 0 BD2 0 0 BM2 0 AND
+R22 BD2 0 1G
+R21 BM2 0 1G
+E21 N2002 0 LAPLACE {V(BD2)} {exp(-s*ton)}
+*la suite
+E2 N003 N2 BS2 0 10
+A2 0 BM2 0 VPULSE 0 0 BS2 0 AND
+R2 COM2 N004 200
+D2 N003 N004 D
+*retard b3 -> bd3
+E30 BD3  0 LAPLACE {V(b3)} {exp(-s*(5.556e-5*alpha1))}
+*monostable BD3 -> BM3
+A30 N3002 0 0 0 0 N3003 0 0 BUF
+A32 0 N3003 0 BD3 0 0 BM3 0 AND
+R32 BD3 0 1G
+R31 BM3 0 1G
+E31 N3002 0 LAPLACE {V(BD3)} {exp(-s*ton)}
+*la suite
+E3 N005 N3 BS3 0 10
+A3 0 BM3 0 VPULSE 0 0 BS3 0 AND
+R3 COM3 N006 200
+D3 N005 N006 D
+
+.model D D
+.lib opamp.sub
+.ENDS    Thyr_com3

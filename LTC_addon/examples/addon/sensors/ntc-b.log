@@ -1,0 +1,57 @@
+Circuit: * C:\Users\Jean Louis Salvat\Desktop\LTspiceIV\examples\addon\sensors\ntc-b.asc
+
+Direct Newton iteration failed to find .op point.  (Use ".option noopiter" to skip.)
+Starting Gmin stepping
+Gmin = 10
+Gmin = 1.07374
+Gmin = 0.115292
+Gmin = 0.0123794
+Gmin = 0.00132923
+Gmin = 0.000142725
+vernier = 0.5
+vernier = 0.25
+vernier = 0.125
+vernier = 0.0625
+vernier = 0.03125
+Gmin = 5.84601e-005
+vernier = 0.015625
+vernier = 0.0078125
+vernier = 0.00390625
+vernier = 0.00195313
+vernier = 0.000976563
+vernier = 0.000488281
+Gmin = 0
+Gmin stepping failed
+
+Starting source stepping with srcstepmethod=0
+Source Step = 3.0303%
+vernier = 0.25
+Source Step = 0.0177557%
+Starting source stepping with srcstepmethod=1
+Source Step = 3.0303%
+vernier = 0.25
+Source stepping failed
+
+Pseudo Transient succeeded in finding the operating point.
+Semiconductor Device Operating Points:
+                        --- Bipolar Transistors ---
+Name:       q1
+Model:      npn
+Ib:       4.21e-04
+Ic:       4.54e-03
+Vbe:      8.50e-01
+Vbc:      7.88e-01
+Vce:      6.27e-02
+BetaDC:   1.08e+01
+Gm:       2.08e-01
+Rpi:      4.46e+02
+Rx:       0.00e+00
+Ro:       6.40e+01
+Cbe:      0.00e+00
+Cbc:      0.00e+00
+Cjs:      0.00e+00
+BetaAC:   9.30e+01
+Cbx:      0.00e+00
+Ft:       0.00e+00
+
+

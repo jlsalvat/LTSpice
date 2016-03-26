@@ -1,0 +1,84 @@
+* SPICE model for DAC8408 by Uday Godbole 23 Jan 07
+* This is one-fourth of the package. 
+* Power supplies, digital interface etc not modelled.
+.PARAM _R = 10k ; nominal DAC ladder resistance. SPEC sheet has range 6k..14k
+.PARAM _2R = 20k
+* PinOuts:
+* 301 = VREF
+* 302 = RFB
+* 303 = IOUT1
+* 304 = IOUT2
+.SUBCKT DAC8408	301 302 303 304
+* convert value to 8 bits (Danke schön, Helmut Sennewald)
+B0 100 0 V = IF (({DAC} - 2*int({DAC}/2)) >= 1, 3 , 0)
+B1 101 0 V = IF (({DAC} - 4*int({DAC}/4)) >= 2, 3 , 0)
+B2 102 0 V = IF (({DAC} - 8*int({DAC}/8)) >= 4, 3 , 0)
+B3 103 0 V = IF (({DAC} - 16*int({DAC}/16)) >= 8, 3 , 0)
+B4 104 0 V = IF (({DAC} - 32*int({DAC}/32)) >= 16, 3 , 0)
+B5 105 0 V = IF (({DAC} - 64*int({DAC}/64)) >= 32, 3 , 0)
+B6 106 0 V = IF (({DAC} - 128*int({DAC}/128)) >= 64, 3 , 0)
+B7 107 0 V = IF ({DAC} > 127, 3 , 0)
+
+*complements of above
+B10 110 0 V = IF( (V(100,0) < 1), 3, 0)
+B11 111 0 V = IF( (V(101,0) < 1), 3, 0)
+B12 112 0 V = IF( (V(102,0) < 1), 3, 0)
+B13 113 0 V = IF( (V(103,0) < 1), 3, 0)
+B14 114 0 V = IF( (V(104,0) < 1), 3, 0)
+B15 115 0 V = IF( (V(105,0) < 1), 3, 0)
+B16 116 0 V = IF( (V(106,0) < 1), 3, 0)
+B17 117 0 V = IF( (V(107,0) < 1), 3, 0)
+
+* ladder resistors
+R00	n0 n10 {_2R}
+R01	n10 n11 {_R}
+R10	n1 n11 {_2R}
+R11	n11 n12 {_R}
+R20	n2 n12 {_2R}
+R21	n12 n13 {_R}
+R30	n3 n13 {_2R}
+R31	n13 n14 {_R}
+R40	n4 n14 {_2R}
+R41	n14 n15 {_R}
+R50	n5 n15 {_2R}
+R51	n15 n16 {_R}
+R60	n6 n16 {_2R}
+R61	n16 301 {_R}
+R70	n7 301 {_2R}
+
+R8	n10 304 {_2R}
+R9	303 302 {_R}
+
+* Equiv caps approximation
+C1	303 0 40p
+C2	304 0 40p
+
+*switches
+S7a	n7 303 107 0 Swm7
+S6a	n6 303 106 0 Swm6
+S5a	n5 303 105 0 Swm5
+S4a	n4 303 104 0 Swm4
+S3a	n3 303 103 0 Swm3
+S2a	n2 303 102 0 Swm2
+S1a	n1 303 101 0 Swm1
+S0a	n0 303 100 0 Swm0
+
+S7b	n7 304 117 0 Swm7
+S6b	n6 304 116 0 Swm6
+S5b	n5 304 115 0 Swm5
+S4b	n4 304 114 0 Swm4
+S3b	n3 304 113 0 Swm3
+S2b	n2 304 112 0 Swm2
+S1b	n1 304 111 0 Swm1
+S0b	n0 304 110 0 Swm0
+
+.MODEL Swm7 VSWITCH (RON=20 ROFF=1E12 VON=2.0 VOFF=1.4)
+.MODEL Swm6 VSWITCH (RON=40 ROFF=1E12 VON=2.0 VOFF=1.4)
+.MODEL Swm5 VSWITCH (RON=80 ROFF=1E12 VON=2.0 VOFF=1.4)
+.MODEL Swm4 VSWITCH (RON=160 ROFF=1E12 VON=2.0 VOFF=1.4)
+.MODEL Swm3 VSWITCH (RON=320 ROFF=1E12 VON=2.0 VOFF=1.4)
+.MODEL Swm2 VSWITCH (RON=640 ROFF=1E12 VON=2.0 VOFF=1.4)
+.MODEL Swm1 VSWITCH (RON=1280 ROFF=1E12 VON=2.0 VOFF=1.4)
+.MODEL Swm0 VSWITCH (RON=2560 ROFF=1E12 VON=2.0 VOFF=1.4)
+.ENDS DAC8408
+

@@ -1,0 +1,176 @@
+*-----------------------------------------------------------------------------
+*
+*** Voltage comparators
+*
+* The parameters in this comparator library were derived from data sheets for
+* each parts.  The macromodel used was developed by MicroSim Corporation, and
+* is produced by the "Parts" option to PSpice.
+*
+* Although we do not use it, another comparator macro model is described in:
+*
+*       An Integrated-Circuit Comparator Macromodel
+*         by Ian Getreu, Andreas Hadiwidjaja, and Johan Brinch
+*       IEEE Journal of Solid-State Circuits, Vol. SC-11, no. 6, Dec. 1976
+*
+* This reference covers the considerations that go into duplicating the
+* behavior of voltage comparators.
+*
+* The comparators are modelled at room temperature.  The macro model does not
+* track changes with temperature.  This library file contains models for
+* nominal, not worst case, devices.
+*$
+*
+*-----------------------------------------------------------------------------
+* connections:   non-inverting input
+*                | inverting input
+*                | | positive power supply
+*                | | | negative power supply
+*                | | | | open collector output
+*                | | | | | output ground
+*                | | | | | |
+.subckt LM111    1 2 3 4 5 6
+*
+  f1    9  3 v1 1
+  iee   3  7 dc 100.0E-6
+  vi1  21  1 dc .45
+  vi2  22  2 dc .45
+  q1    9 21  7 qin
+  q2    8 22  7 qin
+  q3    9  8  4 qmo
+  q4    8  8  4 qmi
+.model qin PNP(Is=800.0E-18 Bf=833.3)
+.model qmi NPN(Is=800.0E-18 Bf=1002)
+.model qmo NPN(Is=800.0E-18 Bf=1000 Cjc=1E-15 Tr=118.8E-9)
+  e1   10  6  9  4  1
+  v1   10 11 dc 0
+  q5    5 11  6 qoc
+.model qoc NPN(Is=800.0E-18 Bf=34.49E3 Cjc=1E-15 Tf=364.6E-12 Tr=79.34E-9)
+  dp    4  3 dx
+  rp    3  4 6.122E3
+.model dx  D(Is=800.0E-18 Rs=1)
+*
+.ends
+*$
+*-----------------------------------------------------------------------------
+* connections:   non-inverting input
+*                | inverting input
+*                | | positive power supply
+*                | | | negative power supply
+*                | | | | open collector output
+*                | | | | | output ground
+*                | | | | | |
+.subckt LM119    1 2 3 4 5 6
+*
+  f1    3  9 v1 1
+  iee   7  4 dc 100.0E-6
+  q1    9  2  7 qin
+  q2    8  1  7 qin
+  q3    9  8  3 qmo
+  q4    8  8  3 qmi
+.model qin NPN(Is=800.0E-18 Bf=333.3)
+.model qmi PNP(Is=800.0E-18 Bf=1002)
+.model qmo PNP(Is=800.0E-18 Bf=1000 Cjc=1E-15 Tr=59.42E-9)
+  e1   10  6  3  9  1
+  v1   10 11 dc 0
+  q5    5 11  6 qoc
+.model qoc NPN(Is=800.0E-18 Bf=41.38E3 Cjc=1E-15 Tf=23.91E-12 Tr=24.01E-9)
+  dp    4  3 dx
+  rp    3  4 5.556E3
+.model dx  D(Is=800.0E-18 Rs=1)
+*
+.ends
+*$
+*-----------------------------------------------------------------------------
+* connections:   non-inverting input
+*                | inverting input
+*                | | positive power supply
+*                | | | negative power supply
+*                | | | | open collector output
+*                | | | | | output ground
+*                | | | | | |
+.subckt LM211    1 2 3 4 5 6
+*
+  x_lm211 1 2 3 4 5 6 LM111
+*
+* the LM211 is identical to the LM111, but has a more limited temp. range
+*
+.ends
+*$
+*-----------------------------------------------------------------------------
+* connections:   non-inverting input
+*                | inverting input
+*                | | positive power supply
+*                | | | negative power supply
+*                | | | | open collector output
+*                | | | | | output ground
+*                | | | | | |
+.subckt LM311    1 2 3 4 5 6
+*
+f1    9  3 v1 1
+iee   3  7 dc 100.0E-6
+vi1  21  1 dc .45
+vi2  22  2 dc .45
+q1    9 21  7 qin
+q2    8 22  7 qin
+q3    9  8  4 qmo
+q4    8  8  4 qmi
+.model qin PNP(Is=800.0E-18 Bf=500)
+.model qmi NPN(Is=800.0E-18 Bf=1002)
+.model qmo NPN(Is=800.0E-18 Bf=1000 Cjc=1E-15 Tr=124.2E-9)
+e1   10  6  9  4  1
+v1   10 11 dc 0
+q5    5 11  6 qoc
+.model qoc NPN(Is=800.0E-18 Bf=206.9E3 Cjc=1E-15 Tf=7.855E-12 Tr=83.83E-9)
+dp    4  3 dx
+rp    3  4 7.087E3
+.model dx  D(Is=800.0E-18)
+*
+.ends
+*$
+*-----------------------------------------------------------------------------
+* connections:   non-inverting input
+*                | inverting input
+*                | | positive power supply
+*                | | | negative power supply
+*                | | | | open collector output
+*                | | | | | output ground
+*                | | | | | |
+.subckt LM319    1 2 3 4 5 6
+*
+  x_lm319 1 2 3 4 5 6 LM119
+*
+* the LM319 is identical to the LM119, but has a more limited temp. range
+*
+.ends
+
+* WARNING : please consider following remarks before usage
+*
+* 1) All models are a tradeoff between accuracy and complexity (ie. simulation
+*    time).
+* 2) Macromodels are not a substitute to breadboarding, they rather confirm the
+*    validity of a design approach and help to select surrounding component values.
+*
+* 3) A macromodel emulates the NOMINAL performance of a TYPICAL device within
+*    SPECIFIED OPERATING CONDITIONS (ie. temperature, supply voltage, etc.).
+*    Thus the macromodel is often not as exhaustive as the datasheet, its goal
+*    is to illustrate the main parameters of the product.
+*
+* 4) Data issued from macromodels used outside of its specified conditions
+*    (Vcc, Temperature, etc) or even worse: outside of the device operating
+*    conditions (Vcc, Vicm, etc) are not reliable in any way.
+
+
+* LM393A VOLTAGE COMPARATOR "MACROMODEL" SUBCIRCUIT
+* CREATED USING PARTS VERSION 4.03 ON 03/07/90 AT 14:17
+* REV (N/A)
+* CONNECTIONS:   NON-INVERTING INPUT
+*                | INVERTING INPUT
+*                | | POSITIVE POWER SUPPLY
+*                | | | NEGATIVE POWER SUPPLY
+*                | | | | OPEN COLLECTOR OUTPUT
+*                | | | | |
+.SUBCKT LM393A   1 2 3 4 5 6
+*
+  x_LM393A 1 2 3 4 5 6 LM119
+.ENDS
+

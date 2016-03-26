@@ -1,0 +1,10 @@
+**********************************swith ideal ***********************
+* come from canonical cell.asc
+
+.subckt DSW a p c d
+Bi a x I=V(n)*I(Vc)
+Bv x p V=V(n)*V(a,p)
+Vc x c 0 ; current sense
+Bd 0 n I=limit(0,1-1u,V(d))
+Cd 0 n 1n Rpar=1
+.ends DSW

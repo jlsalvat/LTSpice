@@ -1,0 +1,46 @@
+* LM385.sub 
+* V1.01
+* Self made model based on the LT1004-1.2 model.
+* Helmut Sennewald
+*
+* If the circuit has convergence problems,
+* use the following options.
+* .options itl1=500 itl2=500 
+*
+* The Anode has pin-list order 1 
+*       Reference ______
+*       Cathode _____   |
+*       Anode ____   |  |
+*                 |  |  |
+.subckt LM385     A  K  FB
+R0 A K 1e7  ; DC-convergence
+*R00 A R 1e9
+Q1 K N001 A 0 N 5
+Q3 N001 N003 K 0 P
+Q4 N003 N003 N002 0 P
+Q5 N003 N005 N004 0 N 1
+R2 N004 A 500
+R3 N001 A 100k
+R4 K N002 7.5k
+C1 N001 N003 20p
+Q6 N005 N008 N006 0 N 4
+Q7 N005 N007 K 0 P
+R5 N006 A 60k
+C2 N005 N007 20p
+Q8 N008 N008 A 0 N 1
+R6 K N008 600k
+Q9 N009 N008 A 0 N
+Q10 N010 N012 N009 0 N 7.43
+Q11 N007 N011 N009 0 N
+Q12 N007 N010 K 0 P
+Q13 N010 N010 K 0 P
+Q14 A FB N013 0 P
+R7 N012 N013 300k
+R8 N011 N012 50k
+R9 K N011 200k
+D1 A K DD
+CC A K 5p
+.model N NPN(BF=120 Cje=.5p Cjc=.5p Rb=500 NF=1.059 IKF=1m)
+.model P LPNP(BF=25 Cje=.3p Cjc=1.5p Rb=250 NF 1.061)
+.model DD D(Is=1e-12 Rs=5 Cjo=10p Tt=100n Ibv=0.1m Bv=6.3)
+.ends

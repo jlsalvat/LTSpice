@@ -1,0 +1,98 @@
+* Device type:		Loudspeaker
+* Device model:		Celestion Vintage 10
+* Author:		Duncan Munro
+* Date:			29/6/97
+* Copyright:		(C)1997 DDS
+*
+* The model reflects the change of impedance as presented to
+* the amplifier with frequency.
+*
+* Please note that this model is provided "as is" and
+* no warranty is provided in respect of its suitability
+* for any application.
+*
+* This model is provided for educational and non-profit use.
+*
+* The model is not endorsed or supported by Celestion.  All trademarks
+* acknowledged.
+*
+* Pins	A	Terminal 1
+*	B	Terminal 2
+*-----------------------------------------------------------------------
+.SUBCKT Model_Celestion_Vintage_30 A B
+RL	A	2	7.5
+RD1	2	3	12.5
+LD1	3	2	20m
+CD1	2	3	195u
+RD2	3	4	0.5
+CD2	3	4	50u
+LD2	4	3	100u
+LD3	B	4	120u
+RD3	B	4	20
+.ENDS
+*
+* Device model:		Celestion Vintage 30
+* Author:		Duncan Munro
+* Date:			29/6/97
+* Copyright:		(C)1997 DDS
+*
+* The model reflects the change of impedance as presented to
+* the amplifier with frequency.
+*
+* Please note that this model is provided "as is" and
+* no warranty is provided in respect of its suitability
+* for any application.
+*
+* This model is provided for educational and non-profit use.
+*
+* The model is not endorsed or supported by Celestion.  All trademarks
+* acknowledged.
+*
+* Email queries to duncan@muffy.demon.co.uk
+*
+* Pins	A	Terminal 1
+*	B	Terminal 2
+*
+.SUBCKT Model_Celestion_Vintage_30 A B
+RL	A	2	7.5
+RD1	2	3	12.5
+LD1	3	2	20m
+CD1	2	3	250u
+RD2	3	4	0.5
+CD2	3	4	50u
+LD2	4	3	100u
+LD3	B	4	100u
+RD3	B	4	20
+.ENDS
+*
+*------------------------------------------------------------------------
+* generic speaker simulation (8 ohm)
+* as published in Stereophile Magazine.
+* Donated by Jaime Arbona, converted to subcircuit form
+*
+.SUBCKT	Generic_SPK_8_Ohm	G	2
+R1	2	1	8
+R2	3	2	5
+R3	4	2	5.6
+C1	1	5	4.7u
+C2	G	3	3.3u
+R4	6	5	0.5
+L1	4	7	0.5m
+R5	9	8	100
+R6	8	G	39
+R7	8	10	0.6
+R8	8	11	0.9
+L2	11	9	1m
+L3	G	10	10m
+R9	9	7	0.7
+L4	G	6	0.3m
+C3	G	8	500u
+.ENDS
+*---------------------------------------------------------------------------
+*Speaker minimal subcircuit by Robertugo
+.Subckt minimal_24_Ohms SP1 SP2
+R4 SP1 1 6
+R5 SP2 1 18
+L2 SP2 1 18m
+C3 SP2 1 820µ
+.ends

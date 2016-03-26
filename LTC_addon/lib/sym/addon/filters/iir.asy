@@ -1,0 +1,65 @@
+Version 4
+SymbolType CELL
+LINE Normal -127 -1 -159 32
+LINE Normal -96 -1 -127 -1
+LINE Normal -96 65 -96 -1
+LINE Normal -126 65 -96 65
+LINE Normal -159 32 -126 65
+LINE Normal 112 -1 144 32
+LINE Normal 81 -1 112 -1
+LINE Normal 81 65 81 -1
+LINE Normal 111 65 81 65
+LINE Normal 144 32 111 65
+LINE Normal -64 32 -96 32
+LINE Normal -72 27 -64 32
+LINE Normal -64 32 -72 27
+LINE Normal -71 37 -64 32
+LINE Normal 82 33 50 33
+LINE Normal 74 28 82 33
+LINE Normal 82 33 74 28
+LINE Normal 75 38 82 33
+LINE Normal -208 32 -256 32
+LINE Normal -187 11 -208 32
+LINE Normal -159 32 -184 32
+LINE Normal -198 30 -198 80
+LINE Normal -203 38 -198 30
+LINE Normal -198 30 -203 38
+LINE Normal -193 38 -198 30
+LINE Normal 191 32 144 32
+LINE Normal -102 130 -83 130
+LINE Normal -83 141 -102 130
+LINE Normal -102 152 -83 141
+LINE Normal -81 152 -102 152
+LINE Normal 37 130 56 130
+LINE Normal 56 141 37 130
+LINE Normal 37 152 56 141
+LINE Normal 58 152 37 152
+RECTANGLE Normal 171 176 -242 -95
+RECTANGLE Normal 48 96 -64 -16
+TEXT -148 30 Left 2 ADC
+TEXT 133 30 Right 2 DAC
+TEXT -163 141 Left 2 y(n)=
+TEXT -73 139 Left 2 ai.y(n-i) +
+TEXT 66 139 Left 2 bi.x(n-i)
+TEXT -106 164 Left 2 i=1
+TEXT 33 164 Left 2 i=0
+TEXT -104 117 Left 2 i=5
+TEXT 32 118 Left 2 i=5
+WINDOW 0 -60 -106 Left 2
+WINDOW 123 -84 -66 Center 2
+WINDOW 39 -41 -42 Center 2
+WINDOW 40 -192 95 Center 2
+WINDOW 38 -6 37 Center 2
+SYMATTR Value2 a1=0.5 a2=0 a3=0 a4=0 a5=0
+SYMATTR SpiceLine b0=0.5 b1=0.5 b2=0 b3=0 b4=0 b5=0
+SYMATTR SpiceLine2 fe=10k
+SYMATTR SpiceModel IIR
+SYMATTR Prefix X
+SYMATTR Description RIF filter, sample freq=fs
+SYMATTR ModelFile addon\IIR.sub
+PIN -256 32 BOTTOM 0
+PINATTR PinName in
+PINATTR SpiceOrder 1
+PIN 192 32 BOTTOM 4
+PINATTR PinName out
+PINATTR SpiceOrder 2

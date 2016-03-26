@@ -1,0 +1,32 @@
+*-------------------------------------------------------------------
+.SUBCKT RLY_SIG1NC  coilp coilm in1 out1 
++ RON=0.1 ROFF=1G
++ TON=5m VON=0.7 VOFF=0.3 
++ LCOIL=0.1 CCOIL=1f 
++ COFF=1f Lser=1p 
+*
+* SPDT Relay
+* in1->out1  open if relay is not energized
+* in1->out2  on   if relay is not energized
+*
+.PARAM INOM=VNOM/RCOIL
+.PARAM VT=(VON+VOFF)/2
+.PARAM VH=(VON-VOFF)/2
+.PARAM C1=-0.8*0.001*TON/log(1-VON)
+*
+LCoil coilp 1 {LCOIL}
+RCoil 1 2 {RCOIL}
+VCoil 2 coilm 0
+CCoil coilp coilm {CCOIL}
+*
+*BCoil 3 0 V=I(VCoil)/INOM
+ECoil 3 0 VALUE={(I(VCoil)/INOM)}
+* Delay until SW1 close
+RD1 3 5 1k
+CD1 5 0 {C1}
+*
+SW1 in1 out1 5 0 Switch1 
+COff1 in1 out1 {COFF}
+*
+.model Switch1 SW(Ron={ROFF} Roff={RON} Vt={VT} Vh={VH} Lser={LSER})
+.ENDS

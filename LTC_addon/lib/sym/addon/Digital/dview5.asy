@@ -1,0 +1,56 @@
+Version 4
+SymbolType CELL
+LINE Normal -48 -112 -64 -112
+LINE Normal -48 -80 -64 -80
+LINE Normal -48 -48 -64 -48
+LINE Normal -48 -16 -64 -16
+LINE Normal -48 16 -64 16
+LINE Normal 16 -112 0 -112
+LINE Normal 16 -80 0 -80
+LINE Normal 16 -48 0 -48
+LINE Normal 16 -16 0 -16
+LINE Normal 16 -16 0 -16
+LINE Normal 16 16 0 16
+RECTANGLE Normal 0 32 -48 -128
+TEXT -24 -112 Center 2 1
+TEXT -24 -80 Center 2 2
+TEXT -24 -48 Center 2 3
+TEXT -24 -16 Center 2 4
+TEXT -24 16 Center 2 5
+WINDOW 3 -17 48 Center 2
+WINDOW 0 -48 -144 Left 2
+SYMATTR Value DVIEW5
+SYMATTR Prefix X
+SYMATTR SpiceLine OFFSET=0  GAIN=0.1
+SYMATTR Description Digital Signal Viewer
+SYMATTR ModelFile addon\dview.lib
+PIN -64 -112 NONE 8
+PINATTR PinName i1
+PINATTR SpiceOrder 1
+PIN 16 -112 NONE 8
+PINATTR PinName o1
+PINATTR SpiceOrder 2
+PIN -64 -80 NONE 8
+PINATTR PinName i2
+PINATTR SpiceOrder 3
+PIN 16 -80 NONE 8
+PINATTR PinName o2
+PINATTR SpiceOrder 4
+PIN -64 -48 NONE 8
+PINATTR PinName i3
+PINATTR SpiceOrder 5
+PIN 16 -48 NONE 8
+PINATTR PinName o3
+PINATTR SpiceOrder 6
+PIN -64 -16 NONE 8
+PINATTR PinName i4
+PINATTR SpiceOrder 7
+PIN 16 -16 NONE 8
+PINATTR PinName o4
+PINATTR SpiceOrder 8
+PIN -64 16 NONE 8
+PINATTR PinName i5
+PINATTR SpiceOrder 9
+PIN 16 16 NONE 8
+PINATTR PinName o5
+PINATTR SpiceOrder 10

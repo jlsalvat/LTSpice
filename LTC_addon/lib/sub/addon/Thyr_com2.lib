@@ -1,0 +1,84 @@
+*************************************************************************************************************
+*                                  COMMANDE THYRISTOR   IUT  POUR  PONT  MONOPHASE
+************************************************************************************************************
+* Modèle simplifié de thyristor constitué d'un interrupteur en série avec une diode
+* L'interrupteur se ferme à l'instant alpha (en degré) compté à partir de l'origine des temps
+* Il s'ouvre 180°(10ms) plus tard.
+* Ce composant convient pour la simulation des pont redresseurs monophasés
+*ou des gradateurs alimentés par des réseaux 50Hz.
+
+
+.SUBCKT Thyr_com2 P1  N  com1 N1 com2 N2 ton1={ton} alpha1={alpha}
+
+***** bloc commande thyristor PD2 50Hz alpha et ton en paramètres
+
+*entrée P1 sortie comTh1
+*commande Thyristor V(P1)>0
+**** bloc retard alpha par rapport à 0V entree p1 sortie N001
+R1 P1 0 1G
+XU6 N P1 BB1 opamp VCC=10 Aol=100K GBW=10Meg
+E1 N001  0 LAPLACE {V(bb1)} {exp(-s*(5.556e-5*alpha1))}
+
+*monostable de durée ton entree N001 sortie m1
+A1 N002 0 0 0 0 N003 0 0 BUF
+A2 0 N003 0 N001 0 0 m1 0 AND
+R2 N001 0 1G
+E2 N002 0 LAPLACE {V(N001)} {exp(-s*ton1)}
+***** pulse ton  1V f=10kHz  entree m1,clk sortie out1
+V2 clk 0 PULSE(0 10 0 0 0 50u 100u)
+A3 0 m1 0 clk 0 0 out1 0 AND
+***** bloc transfo entree out1-GND sortie com1-N1
+E3 out2 N1 out1 0 10
+R5 com1 out2 1k
+
+*entrée P1 sortie comTh2
+*commande Thyristor V(P1)<0
+**** bloc retard alpha par rapport à 0V entree p1 sortie N0011
+R11 P11 0 1G
+XU7 P1 N BB11 opamp VCC=10 Aol=100K GBW=10Meg
+E11 N0011  0 LAPLACE {V(bb11)} {exp(-s*(5.556e-5*alpha1))}
+
+*monostable de durée ton entree N001 sortie m1
+A11 N0021 0 0 0 0 N0031 0 0 BUF
+A21 0 N0031 0 N0011 0 0 m11 0 AND
+R21 N0011 0 1G
+E21 N0021 0 LAPLACE {V(N0011)} {exp(-s*ton1)}
+***** pulse ton  1V f=10kHz  entree m1,clk sortie out1
+V21 clk1 0 PULSE(0 10 0 0 0 50u 100u)
+A31 0 m11 0 clk1 0 0 out11 0 AND
+***** bloc transfo entree out1 sortie out3
+E31 out21 n2 out11 0 10
+R51 com2 out21 1k
+.lib opamp.sub
+
+.ENDS   Thyr_com2
+
+.SUBCKT Thyr_com2_a in+  in-  com1 N1 com2 N2 
+R12 in+ 0 100Meg
+R13 in- 0 100MEg
+XU10 in+ in- oa1 opamp VCC=10 Aol=100K GBW=10Meg
+XU12 U12- 0 U12S opamp VCC=180 Aol=100K GBW=10Meg
+R14 U12- oa1 0.6k
+C1 U12S U12- 1µ
+XU3 U12S U12- oa1 0 default Ron=1 Roff=1Meg Vt=.5 Vh=-.4
+XU14 alpha U12S P001 opamp VCC=180 Aol=100K GBW=10Meg
+XU15 U12S fen P002 opamp VCC=180 Aol=100K GBW=10Meg
+Valpha alpha 0 80
+D11 bd10 P001 D
+D12 bd10 P002 D
+R15 10V bd10 1k
+V10 10V 0 10
+B2 fen 0 V=V(alpha)+10
+R16 bd10 bd11 1k
+C12 bd11 0 1n
+A1 0 bd11 0 pulse 0 0 BD1 0 AND
+Vpulse pulse 0 PULSE(0 1 0 1n 1n 50u 100u)
+E1 com11 N1 BD1 0 10
+R17 com1 com11 1k
+R18 com1 N1 10meg
+R19 N1 0 1G
+R0  com2 n2
+.model D D
+.lib C:\Program Files\LTC\SwCADIII\lib\cmp\standard.dio
+.lib opamp.sub
+.lib sw.lib

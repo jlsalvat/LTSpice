@@ -1,0 +1,200 @@
+********************************************************************************
+*
+*  Clarke and Park matrices (and inverses), from 3-to-2 and from 2-to-2 phases
+* (quadrature), symmetrical components extraction + inverse, all in one symbol
+* for easier workflow.
+*
+*									Vlad
+*
+********************************************************************************
+*
+* [SYMBOL]
+*
+* - In general, the left pins are the inputs and the right ones, the outputs, as
+* suggested by their namings:
+*
+*		--------
+*	  IN1--|	|--OUT1
+*	  IN2--|	|--OUT2
+*	  IN3--|	|--OUT3
+*		---+----
+*		   |
+*		  WT
+*
+* - The available functions as seen in the drop-down menu are:
+*
+* abc/AB0	(ISO-8859-15 doesn't have "αβ")
+* AB0/abc
+* abc/dq0
+* dq0/abc
+* AB/dq
+* dq/AB
+* abc/120
+* 120/abc
+*
+* - The Clarke and the symmetrical matrices don't make use of the 'WT' pin, so
+* it's safe to ignore.
+*
+* - The quadrature matrices, AB/dq and dq/AB, only use 'IN1', 'IN2', 'OUT1',
+* 'OUT2' and 'WT' pins, the rest can be left floating ('IN3' and 'OUT3').
+*
+*
+* [PARAMETERS]
+*
+* sq=<0,1>	= specifies whether the matrix is amplitude invariant <0> or
+*		power invariant	<1> (default), only for abc/AB0 and inverse;
+* f	[Hz]	= working frequency, only for abc/120 and inverse.
+*
+* - Hidden:
+*
+* tripdv,tripdt	= LTspice's specific for B-sources (Park matrices only);
+*
+*
+* [CHARACTERISTICS]
+*
+* - The abc/120 and inverse are implemented using a cvasi-instantaneous approach
+* that will work for any distorted/unbalanced inputs with only a quarter of a
+* period delay, with some exceptions: because of the the phasor nature of the
+* symmetrical components analysis, if phase 'B' has DC offset different than 'C'
+* phase or vice-versa, then, after an abc/120/abc chain, the two phases will
+* have their offsets swapped.
+*  E.g. Before the chain: A=sin(wt), B=sin(wt-2*pi/3)+0.1, C=sin(wt+2*pi/3)
+*	After:		  A=sin(wt), B=sin(wt-2*pi/3), C=sin(wt+2*pi/3)+0.1
+*  This means that the positive/negative/zero sequences are also wrong for this
+* case.
+*  Another case is if the 'A' phase has displacement and offset. In general, DC
+* present at the input, however unlikely, can give wrong results. Eliminating
+* the offset from the outputs, though, will give correct results.
+*
+********************************
+*
+*	Clarke matrix
+*
+********************************
+.subckt abc/AB0 IN1 IN2 IN3 OUT1 OUT2 OUT3 WT
+.param sq=1 coef=sqrt(2/3)**u(sq)
+R7 out3 0 1
+G1 0 out3 in1 0 {coef/sqrt(2)**u(sq)}
+G4 0 out1 in1 0 {coef}
+G5 0 out1 0 in2 {coef/2}
+R1 out1 0 1
+G7 0 out2 in2 in3 {sqrt(3)/2*coef}
+R2 out2 0 1
+G2 0 out3 in2 0 {coef/sqrt(2)**u(sq)}
+G3 0 out3 in3 0 {coef/sqrt(2)**u(sq)}
+G6 0 out1 0 in3 {coef/2}
+.ends abc/AB0
+****************************************
+*
+*	Transposed Clarke matrix
+*
+****************************************
+.subckt AB0/abc IN1 IN2 IN3 OUT1 OUT2 OUT3 WT
+.param sq=1 coef=sqrt(2/3)**sq
+R7 out3 0 1
+G1 0 out3 in3 0 {coef/sqrt(2)**u(sq)}
+G2 0 out3 0 in1 {coef/2}
+G3 0 out3 0 in2 {sqrt(3)/2*coef}
+G4 0 out2 in3 0 {coef/sqrt(2)**u(sq)}
+G5 0 out2 0 in1 {coef/2}
+R1 out2 0 1
+G7 0 out1 in3 0 {coef/sqrt(2)**u(sq)}
+R2 out1 0 1
+G6 0 out2 in2 0 {sqrt(3)/2*coef}
+G8 0 out1 in1 0 {coef}
+.ends AB0/abc
+********************************
+*
+*	Park matrix
+*
+********************************
+.subckt abc/dq0 IN1 IN2 IN3 OUT1 OUT2 OUT3 WT
+.param tripdv=1 tripdt=1u
+B1 0 out1 I=sqrt(2/3)*(v(in1)*cos(v(wt))+v(in2)*cos(v(wt)-2*pi/3)+v(in3)*cos(v(wt)+2*pi/3)) rpar=1 tripdv={tripdv} tripdt={tripdt}
+B2 0 out2 I=-sqrt(2/3)*(v(in1)*sin(v(wt))+v(in2)*sin(v(wt)-2*pi/3)+v(in3)*sin(v(wt)+2*pi/3)) rpar=1 tripdv={tripdv} tripdt={tripdt}
+B3 0 out3 I=1/sqrt(3)*(v(in1)+v(in2)+v(in3)) rpar=1 tripdv={tripdv} tripdt={tripdt}
+.ends abc/dq0
+****************************************
+*
+*	Transposed Park matrix
+*
+****************************************
+.subckt dq0/abc IN1 IN2 IN3 OUT1 OUT2 OUT3 WT
+.param tripdv=1 tripdt=1u
+B1 0 out1 I=sqrt(2/3)*(v(in3)/sqrt(2)+v(in1)*cos(v(wt))-v(in2)*sin(v(wt))) rpar=1 tripdv={tripdv} tripdt={tripdt}
+B2 0 out2 I=sqrt(2/3)*(v(in3)/sqrt(2)+v(in1)*cos(v(wt)-2/3*pi)-v(in2)*sin(v(wt)-2/3*pi)) rpar=1 tripdv={tripdv} tripdt={tripdt}
+B3 0 out3 I=sqrt(2/3)*(v(in3)/sqrt(2)+v(in1)*cos(v(wt)+2/3*pi)-v(in2)*sin(v(wt)+2/3*pi)) rpar=1 tripdv={tripdv} tripdt={tripdt}
+.ends dq0/abc
+****************************************
+*
+*	Quadrature Park matrix
+*
+****************************************
+.subckt AB/dq IN1 IN2 IN3 OUT1 OUT2 OUT3 WT
+.param tripdv=1 tripdt=1u
+B1 0 out1 I=v(in1)*cos(v(wt))+v(in2)*sin(v(wt)) Rpar=1 tripdv={tripdv} tripdt={tripdt}
+B2 0 out2 I=v(in2)*cos(v(wt))-v(in1)*sin(v(wt)) Rpar=1 tripdv={tripdv} tripdt={tripdt}
+.ends AB/dq
+************************************************
+*
+*	Transposed quadrature Park matrix
+*
+************************************************
+.subckt dq/AB IN1 IN2 IN3 OUT1 OUT2 OUT3 WT
+.param tripdv=1 tripdt=1u
+B1 0 out1 I=v(in1)*cos(v(wt))-v(in2)*sin(v(wt)) Rpar=1 tripdv={tripdv} tripdt={tripdt}
+B2 0 out2 I=v(in2)*cos(v(wt))+v(in1)*sin(v(wt)) Rpar=1 tripdv={tripdv} tripdt={tripdt}
+.ends dq/AB
+************************************************
+*
+*	Symmetrical components extractor
+*
+************************************************
+.subckt abc/120 IN1 IN2 IN3 OUT1 OUT2 OUT3 WT
+.param f=50
+Ga2 0 out1 in1 N002 {1/3}
+Rbc1 N002 0 1
+Gb2 0 out1 in2 0 {-1/6}
+Gbc1 0 N001 in2 in3 {sqrt(3)/2}
+Rabc1 out3 0 1
+Gc1 0 out3 in3 0 {1/3}
+Ga1 0 out3 in1 0 {1/3}
+Gb1 0 out3 in2 0 {1/3}
+Tbc1 N001 0 N002 0 Td={1/4/f} Z0=1
+Tbc2 N003 0 N004 0 Td={1/4/f} Z0=1
+Gc2 0 out1 in3 0 {-1/6}
+Gb3 0 out2 in2 0 {-1/6}
+Gc3 0 out2 in3 0 {-1/6}
+Ga3 0 out2 in1 N004 {1/3}
+Gbc2 0 N003 in2 in3 {-sqrt(3)/2}
+Rabc2 out1 0 1
+Rabc3 out2 0 1
+Rbc2 N004 0 1
+.ends abc/120
+********************************************************
+*
+*	Inverse symmetrical components extractor
+*
+********************************************************
+.subckt 120/abc IN1 IN2 IN3 OUT1 OUT2 OUT3 WT
+.param f=50
+R1201 out1 0 1
+Gp2 0 out2 in1 0 -0.5
+Gn2 0 out2 in2 0 -0.5
+Gz1 0 out1 in3 0 1
+Gp1 0 out1 in1 0 1
+Rpn1 N002 0 1
+Tpn1 N001 0 N002 0 Td={1/4/f} Z0=1
+Tpn2 N003 0 N004 0 Td={1/4/f} Z0=1
+Gpn1 0 N001 in1 in2 {-sqrt(3)/2}
+Gpn2 0 N003 in1 in2 {sqrt(3)/2}
+Gz2 0 out2 in3 N002 1
+Gn1 0 out1 in2 0 1
+R1202 out2 0 1
+R1203 out3 0 1
+Rpn2 N004 0 1
+Gz3 0 out3 in3 N004 1
+Gp3 0 out3 in1 0 -0.5
+Gn3 0 out3 in2 0 -0.5
+.ends 120/abc
+********************************************************************************

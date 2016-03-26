@@ -1,0 +1,33 @@
+*integrator
+*G(s)=ki/s
+*
+.subckt integrator I O
+B1 O 0 V={ki}*idt(V(I))
+.ends
+
+*difference summer
+*out=in1-in2
+*
+.subckt diff in1 in2 out
+B1 out 0 V=V(in1,in2)
+.ends
+
+*weighted summer, 3 inputs
+*out=k1*V(in1)+k2*V(in2)+k3*V(in3)
+*
+.subckt wtd_summer in1 in2 in3 out
+B1 out 0 V={k1}*V(in1)+{k2}*V(in2)+{k3}*V(in3)
+.ends
+ 
+*
+* Integrator (Helmut's)
+* G(s)=Ki/(Ti*s)
+*
+.subckt CT___I in out
+.param Ki=1 Ti=1 		; parameters
+G1 0 1 in 0 1
+C1 1 0 {Ti} IC=0
+R1 1 0 1e10
+E1 out 0 1 0 {Ki}
+.ends
+

@@ -1,0 +1,45 @@
+*** START IDEAL 8-BIT ADC Subcircuit ******************************
+.subckt ADC8 VDD VREFP VREFM Vin B7 B6 B5 B4 B3 B2 B1 BO CLOCK
+* Set up common mode voltage
+BCM VCM 0 V=(V(VREFP)-V(VREFM))/2
+* Set up logic switching point
+R3 VDD VTRIP 100MEG
+R4 VTRIP 0 100MEG
+*modif salvat
+R1 VIN 0 10k
+B1 VINB 0 V={V(VIN)}
+* Ideal input sample and hold
+XSH VDD VTRIP VINb OUTSH CLOCK SAMPHOLD
+* Level shift by VREFM and 1/2LSB
+BPIP PIPIN 0 V=V(OUTSH)-V(VREFM)+((V(VREFP)-V(VREFM))/2^9)
+* 8-bit pipeline ADC
+X7 VDD VTRIP VCM PIPIN B7 VOUT7 ADCBIT
+X6 VDD VTRIP VCM VOUT7 B6 VOUT6 ADCBIT
+X5 VDD VTRIP VCM VOUT6 B5 VOUT5 ADCBIT
+X4 VDD VTRIP VCM VOUT5 B4 VOUT4 ADCBIT
+X3 VDD VTRIP VCM VOUT4 B3 VOUT3 ADCBIT
+X2 VDD VTRIP VCM VOUT3 B2 VOUT2 ADCBIT
+X1 VDD VTRIP VCM VOUT2 B1 VOUT1 ADCBIT
+X0 VDD VTRIP VCM VOUT1 BO VOUT0 ADCBIT
+.ends
+* Ideal Sample and Hold subcircuit
+.SUBCKT SAMPHOLD VDD VTRIP Vin Vout CLOCK
+Ein Vinbuf 0 Vin Vinbuf 100MEG
+S1 Vinbuf VinS VTRIP CLOCK switmod
+Cs1 VinS 0 1e-10
+S2 VinS Vouti CLOCK VTRIP switmod
+Couti Vouti 0 1e-16
+Eout Vout 0 Vouti 0 1
+.model switmod SW
+.ends
+* Pipeline stage
+.SUBCKT ADCBIT VDD VTRIP VCM VIN BITOUT VOUT
+S1 VDD BITOUT VIN VCM switmod
+S2 0 BITOUT VCM VIN switmod
+Eouth Vinh 0 VIN VCM 2
+Eoutl Vinl 0 VIN 0 2
+S3 Vinh VOUT BITOUT VTRIP switmod
+S4 Vinl VOUT VTRIP BITOUT switmod
+.model switmod SW
+.ends
+*** END ADC Subcircuit *************************************

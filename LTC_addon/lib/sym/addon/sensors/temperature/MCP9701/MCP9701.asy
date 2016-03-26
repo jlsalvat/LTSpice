@@ -1,0 +1,26 @@
+Version 4
+SymbolType CELL
+LINE Normal 16 64 16 48
+LINE Normal 16 16 16 0
+LINE Normal 48 32 32 32
+LINE Normal -32 32 -10 32
+RECTANGLE Normal 32 48 -3 16
+WINDOW 0 32 0 Left 2
+WINDOW 3 32 64 Left 2
+SYMATTR Value MCP9701
+SYMATTR Description Linear Active Thermistor Intergrated Circuit
+SYMATTR Prefix X
+SYMATTR SpiceModel addon\MCP9701.lib
+SYMATTR Value2 MCP9701
+PIN 16 64 NONE 0
+PINATTR PinName GND
+PINATTR SpiceOrder 1
+PIN 16 0 NONE 0
+PINATTR PinName VDD
+PINATTR SpiceOrder 2
+PIN 48 32 NONE 0
+PINATTR PinName OUT
+PINATTR SpiceOrder 3
+PIN -32 32 BOTTOM 0
+PINATTR PinName T
+PINATTR SpiceOrder 4

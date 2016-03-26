@@ -1,0 +1,45 @@
+==========================================================================
+	     Installation of Pspice Model of Power IC Driver
+
+			International Rectifier
+==========================================================================
+                 
+A high level abstract behavioral PSPICE model has been developed to simulate 
+the electrical performance of IR2104 driver. The model can be used in Pspice
+version 8 or later (MicroSim Pspice). The IR2104 package includes three 
+files:
+   1. Pspice subcircuit model file (IR2104.sub)
+   2. Symbol file (IR2104.slb)
+   3. Instruction file (IR2104.txt)
+
+The subcircuit model can be called directly in a plain Pspice netlist or
+more user friendly pspice schematics. 
+
+To use the subcircuit model within a netlist,simply copy and paste the sub-
+circuit text in the netlist using a text editor. The subcircuit model can be
+instantiated by an X (subcircuit installation) device. For example:
+   Xdriver HIN LIN 0 LO VS HO VB VCC IR2104
+
+To use the subcircuit model in a Pspice schematics editor, follow the steps 
+below:
+   1. Symbol libray Configuration. From a schematics editor, select “Editor 
+      Configuration” from the “Options” menu to display “Editor Configura-
+      tion” dialog box. Then select “Library Settings” to display “Library
+      Settings” dialog box. Type the library name along with its path in the
+      “Library Name” text box. Select the “Symbol” check box only. Click 
+      “Add” or “Add Local” to set up a local or global library respectively.
+   2. Model library file. In a schematics editor, from “Analysis” menu,select
+      “Library and Include Files” to display its dialog box. Type in the sub-
+      circuit model file name in the upper “File Name” text box. Then click 
+      “Add Library*” (global use) or “Add Library” (local use).
+
+Should convergence problems occur, in the .OPTION command, increase the 
+ABSTOL = 1pA to 10pA or larger or increase RELTOL = 0.001 to 0.01 or larger.
+In addition, adjusting step ceiling, total transient analysis time, or 
+iteration number may help. 
+
+International Rectifier reserves the right at any time without notice, to 
+update model information. The models are provided as is, without warranty of 
+any kind, expressed or implied by IR. Visit specific product pages for 
+additional information about technical information including datasheet, 
+availability, etc. 

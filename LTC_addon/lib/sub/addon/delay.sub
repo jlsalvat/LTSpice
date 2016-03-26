@@ -1,0 +1,5 @@
+delay
+.subckt delay in out
+Ez out 0 LAPLACE {V(in)} {exp(-s/fs)}
+Raux out 0 1T
+.ends

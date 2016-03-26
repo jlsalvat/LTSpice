@@ -1,0 +1,61 @@
+* filtre FIR  Finite Impulsonel response, Filtre à réponse impulsionnelle finie 
+.subckt FIR vinp out
+XS  Vinp Vin SAMP_HOLD toff={1/(fe)}
+*R1 Vin 0 10Meg
+XU2 N019 N010 N020 sommateur
+XU3 vin N001 delay fs={fe}
+XU6 vin N019 gain  K={a0}
+XU7 N001 N010 gain K={a1}
+XU4 N020 N011 N021 sommateur
+XU8 N001 N002 delay fs={fe}
+XU5 N002 N011 gain K={a2}
+XU9 N003 N012 gain K={a3}
+XU10 N004 N013 gain K={a4}
+XU12 N002 N003 delay fs={fe}
+XU13 N021 N012 N022 sommateur
+XU14 N003 N004 delay fs={fe}
+XU15 N022 N013 N023 sommateur
+XU1 N004 N005 delay fs={fe}
+XU16 N023 N014 N024 sommateur
+XU17 N005 N014 gain K={a5}
+XU11 N006 N015 gain K={a6}
+XU18 N007 N016 gain K={a7}
+XU19 N008 N017 gain K={a8}
+XU20 N009 N018 gain K={a9}
+XU21 N005 N006 delay fs={fe}
+XU22 N024 N015 N025 sommateur
+XU23 N006 N007 delay fs={fe}
+XU24 N025 N016 N026 sommateur
+XU25 N007 N008 delay fs={fe}
+XU26 N026 N017 N027 sommateur
+XU27 N027 N018 out sommateur
+XU28 N008 N009 delay fs={fe}
+
+.ends
+
+.SUBCKT SAMP_HOLD in out 
+S1 OUTS INS CLK 0 MySwitch
+V1 clk 0 PULSE(0 5 0 10p 10p 1n {toff})
+C1 outs 0 100p
+E1 ins 0 in 0 1
+E2 out 0 outs 0 1
+.MODEL MySwitch SW(Vt=0.5 Ron=0.1 Roff=1G)
+.ends
+
+.subckt delay in out
+Ez out 0 LAPLACE {V(in)} {exp(-s/fs)}
+Raux out 0 1T
+.ends
+
+.subckt gain in out
+bz out 0 V={V(in)*K} 
+Raux out 0 1T
+.ends
+
+.subckt sommateur V1 V2 out
+B1 out 0 V=V(V1)+V(V2)
+R1 V1 0 1Meg
+R2 V2 0 1Meg
+.ends
+
+

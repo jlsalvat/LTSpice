@@ -1,0 +1,35 @@
+Version 4
+SymbolType CELL
+LINE Normal -22 32 -47 32
+LINE Normal -6 27 -22 32
+LINE Normal 32 32 -8 32
+LINE Normal -15 35 -15 64
+LINE Normal -11 39 -15 35
+LINE Normal -15 35 -11 39
+LINE Normal -19 39 -15 35
+LINE Normal 0 23 0 0
+LINE Normal 0 64 0 48
+RECTANGLE Normal 11 48 -33 23
+WINDOW 0 -109 -39 Left 2
+WINDOW 3 -120 -17 Left 2
+SYMATTR Value CD4016B
+SYMATTR Prefix X
+SYMATTR SpiceModel ana_swit.lib
+SYMATTR Value2 CD4016B
+SYMATTR Description quadruple switch analogique
+SYMATTR ModelFile addon\CD4000.lib
+PIN -48 32 BOTTOM 0
+PINATTR PinName IN
+PINATTR SpiceOrder 1
+PIN 32 32 BOTTOM 0
+PINATTR PinName OUT
+PINATTR SpiceOrder 2
+PIN -16 64 RIGHT 0
+PINATTR PinName CTR
+PINATTR SpiceOrder 3
+PIN 0 0 LEFT 0
+PINATTR PinName VDD
+PINATTR SpiceOrder 4
+PIN 0 64 LEFT 0
+PINATTR PinName VSS
+PINATTR SpiceOrder 5

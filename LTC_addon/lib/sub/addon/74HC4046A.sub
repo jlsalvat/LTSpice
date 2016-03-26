@@ -1,0 +1,63 @@
+* block symbol definitions
+* block symbol definitions
+.subckt 74hc4046a 14-Sig VCC-16 3-cmp 9-vco-in dm-10 R1-11 R2-12 PFDII-13 4-vco 6-C1 7-C1 G-8 SR-15 XOR-2 PCP INH
+S1 6-C1 N013 7-C1 G-8 SW
+S2 G-8 7-C1 7-C1 G-8 SW
+S3 7-C1 N013 6-C1 G-8 SW
+S4 G-8 6-C1 6-C1 G-8 SW
+C1 7-C1 6-C1 20p
+B1 G-8 N008 I=I(R1)*6.7
+B2 N020 G-8 V=U( I(C1) )*{Vhigh1} Tripdt=1n
+R3 N020 G-8 1G
+R_by-pass-1 N007 G-8 2.7k
+R_by-pass-2 N014 G-8 2.7k
+B3 G-8 N008 I=I(R2)*7
+R_by-pass-3 dm-10 G-8 2.7k
+G3 G-8 dm-10 9-vco-in dm-10 1
+R1 N007 R1-11 1n
+R2 N014 R2-12 1n
+A2 N003 0 0 0 0 0 fref 0 BUF Td={Td1*4} Vhigh={Vhigh1}
+A3 N005 0 0 0 0 0 fcmp 0 BUF Td={Td1*.1} Vhigh={Vhigh1}
+A4 0 fref 0 fcmp 0 0 XOR-2 0 XOR Vhigh={Vhigh1} Td={td1} ref={ref1}
+A6 N003 0 0 N002 SR-15 0 S 0 AND Vhigh={Vhigh1} ref={ref1}
+A7 N005 0 0 N006 N004 0 R 0 AND Vhigh={Vhigh1} ref={ref1}
+A8 N003 0 0 0 0 N002 0 0 BUF Td={td1/10} ref={ref1} Vhigh={Vhigh1}
+A9 N005 0 0 0 0 N006 0 0 BUF Td={td1/10} ref={ref1} Vhigh={Vhigh1}
+A10 S R 0 0 0 SR-15 N004 0 SRFLOP IC=0 Vhigh={Vhigh1} Td={td1} ref={ref1}
+A5 0 3-cmp 0 N001 0 0 N003 0 AND Vhigh={Vhigh1} ref={ref1}
+A11 0 14-Sig 0 N001 0 0 N005 0 AND Vhigh={Vhigh1} ref={ref1}
+A12 INH 0 0 0 0 N001 0 0 BUF Td={td1/10} ref={ref1} Vhigh={Vhigh1}
+R6 INH G-8 100k
+R7 VCC-16 INH 10k
+A13 VCC-16 0 N005 0 N016 0 N009 0 DFLOP Td={Td1} Vhigh={Vhigh1} ref={ref1}
+A14 VCC-16 0 N003 0 N016 0 N018 0 DFLOP Td={Td1} Vhigh={Vhigh1} ref={ref1}
+A15 N010 0 N005 0 0 0 N011 0 DFLOP Td={Td1} Vhigh={Vhigh1} ref={ref1}
+A16 N018 0 N003 0 0 0 N019 0 DFLOP Td={Td1} Vhigh={Vhigh1} ref={ref1}
+A17 0 N010 N015 N018 0 0 N016 0 AND Vhigh={Vhigh1} ref={ref1}
+A18 N011 0 0 0 N010 0 N012 0 OR Vhigh={Vhigh1} ref={ref1}
+A19 N018 0 0 0 N019 0 N017 0 OR Vhigh={Vhigh1} ref={ref1}
+S5 VCC-16 PFDII-13 N012 G-8 CHP
+S6 G-8 PFDII-13 N017 G-8 CHP
+A1 0 N012 0 N017 0 PCP 0 0 OR Vhigh={Vhigh1} ref={ref1}
+A21 INH 0 0 0 0 N021 0 0 BUF Td={td1/10} ref={ref1} Vhigh={Vhigh1}
+A22 0 N020 0 N021 0 0 4-vco 0 AND Vhigh={Vhigh1} ref={ref1}
+A20 N015 N009 0 0 0 0 N010 0 AND Vhigh={Vhigh1} ref={ref1}
+A23 INH 0 0 0 0 N015 0 0 BUF Td={td1/10} ref={ref1} Vhigh={Vhigh1}
+R4 14-Sig G-8 1G
+R5 3-cmp G-8 1G
+R8 PCP G-8 1G
+R9 SR-15 G-8 1G
+R10 XOR-2 G-8 1G
+R11 PFDII-13 G-8 1G
+R12 4-vco G-8 1G
+E1 N007 G-8 9-vco-in N007 100
+E2 N014 G-8 VCC-16 N014 10
+R13 N008 N013 0.001
+D1 G-8 6-C1 IDEAL
+D2 G-8 7-C1 IDEAL
+.ic V(6-C1)=0.5
+.params: Vhigh1=5 ref1=2.5 Td1=50n
+.model SW SW(Ron=5 Roff=1Meg Vt=500m Vh=600m)
+.model CHP sw(ron=300 roff=300k Vt=0.5)
+.MODEL IDEAL D(Ron=0 Roff=20meg Vfwd=0.7)
+.ends 74hc4046a

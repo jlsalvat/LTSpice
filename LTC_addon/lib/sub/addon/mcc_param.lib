@@ -1,0 +1,16 @@
+* mcc_param.lib
+
+.subckt mcc IN+ IN- fcem
+.params R=10 L=5m
+.params K=30
+.params J=2.5 Cf=0.06
+
+R1 N001 in+ {R}
+L1 N002 N001 {L}
+B1 N003 in- V=K*V(OMEGA)
+V1 N002 N003 0
+R2 OMEGA 0 {Cf}
+C1 OMEGA 0 {J}
+B3 0 OMEGA I=K*(I(V1))
+B2 fcem 0 V=K*V(OMEGA)
+.ends

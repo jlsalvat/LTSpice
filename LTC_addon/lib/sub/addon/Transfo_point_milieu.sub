@@ -1,0 +1,9 @@
+* C:\LTC\Tutoriel\TD3\Draft1.asc
+
+.SUBCKT transfo_point_milieu in+ in- out+ outg out- 
+XU1 in+ in- outg out+ Transfo_ideal LP=20m m=1 R1=1m
+XU2 in+ in- out- outg Transfo_Ideal LP=20m m=1 R1=1m
+.lib Transfo_ideal.sub
+.ends
+
+

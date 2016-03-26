@@ -1,0 +1,25 @@
+*-----------------------------------------------------------------------------
+*R4 Vs 5 .5
+*L4 6 5 {Lpsat}
+*B4 6 0 V=V(5,6)*(Lp/Lpsat-1)/(1+(I(L4)/Is)**6)
+* ISat courant de saturation
+* Lp inductance au primaire
+* Ls inductance primaire ramenée au secondaire
+* R1 résistance série de perte
+* L1 inductance de perte 
+* m rapport de transformation
+
+
+.subckt Transfo_reel 1 2 3 4 
+Rx 1 5 {R1}
+Lx 5 6 {L1}
+L4 6 7 {Lp/100}
+B4 7 2 V=V(6,7)*(100-1)/(1+(I(L4)/{Isat})**6)
+
+RIsol 2 3 100Meg
+F1 6 2 VAm1 {m}
+E1 8 4 6 2 {m}
+VAm1 8 9 0
+RP 6 0 1Meg 
+RS 9 3 1e-9 
+.ends

@@ -1,0 +1,206 @@
+* 
+* 3-Lead Version
+* 1 REF
+* 2 Anode (V-, GND-S, GND-F)
+* 3 Cathode (V+, Collector))
+* *
+.SUBCKT LT1431Z 1 2 3 
+X1 3 10 3 11 2 2 12 1 LT1431
+RCOMP 10 2 1G  ;
+RTOP 11 10 10k ; no function
+RMID 12 10 10k ; no function
+*
+* Version 2.0 Copyright © Linear Technology Corp. 10/19/05. All rights reserved.
+*
+*CCM 5 August 1997 16:27:12 $
+*
+* Pinout matches IC Pinout
+* 1 Collector
+* 2 Comp
+* 3 V+
+* 4 Rtop
+* 5 GND-sense
+* 6 GND-force
+* 7 Rmid
+* 8 Ref
+.SUBCKT LT1431 1 2 3 4 5 6 7 8
+*
+* 10 KOhm voltage divider
+RTOP 4 7 5.0E3
+RBOT 7 5 5.0E3
+* 2.5 V voltage reference
+* with temperature and supply
+* voltage dependency
+IT1 11 5 1.0E-3
+RT1 11 5 1.0E3
+IT2 12 5 1.0E-3
+RT2 12 5 1.0E3 TC=1.0E-4
+RVREF 10 5 1.0E3
+* Vref exactly 2.5 V
+GVREF 5 10 POLY(2) 3 5 11 12 2.4987E-3 -3.5E-7 0 0 0 -0.17
+* Vref + 0.5% = 2.512 V
+*GVREF 5 10 POLY(2) 3 5 11 12 2.511E-3 -3.5E-7 0 0 0 -0.17
+* transconductance amplifier
+* input bias with cancellation for Vin > 4V
+RIN 8 16 10
+GBIAS 16 3 POLY(1) 17 5 4.8E-6 -1.2E-6
+GIB2 5 17 3 5 1.0E-3
+RIB1 17 5 1.0E3
+DIB 17 18 DX
+RIB2 18 19 1
+VIB 19 5 DC 3.2V
+* 1. pole at 18.4 Kz / 1. zero at 184 KHz
+GP1 5 20 8 10 1.0E-5
+CP1 20 21 7.79E-11
+RP11 21 5 11100
+RP12 20 5 1.0E5
+* 2. pole at 375 Kz / 2. zero at 750 KHz
+GP2 5 22 20 5 1.0E-5
+CP2 22 23 2.12E-12
+RP21 23 5 1.0E5
+RP22 22 5 1.0E5
+* 3. zero at 750 KHz / 3. pole at 2.25 MHz
+GP3 5 24 22 5 1.0E-5
+LP3 24 25 0.0318
+RP31 25 5 150E3
+RP32 24 5 300E3
+* 4. pole at 3.0 MHz
+GP4 5 26 24 5 1.0E-5
+RP4 26 5 1.0E5
+CP4 26 5 5.3E-13
+* 5. pole at 3.0 MHz
+GP5 5 27 26 5 1.0E-5
+RP5 27 5 1.0E5
+CP5 27 5 5.3E-13
+* transconductance 4 mA/V
+GGM 5 28 27 5 4.0E-3
+R15 28 2 5.0E3
+* output voltage clamp (Vout = 0 - V+)
+DNL 50 28 DX
+VNL 50 5 DC 0.782
+DPL 28 51 DX
+EPL 51 5 POLY(1) 3 5 -0.782 1.0
+* open collector output stage
+R17 2 30 1.5E3
+Q19 2 33 34 Q1
+R16 34 5 22
+Q20 3 30 31 Q1
+R18 31 5 50000
+Q22A 1 31 32 Q2
+Q22B 1 31 30 Q2
+R19 32 6 3.6
+R20 33 32 5.0E3
+R21 2 5 100000
+C3 30 1 6e-12
+C4 33 2 1e-12
+.MODEL Q1 NPN IS=1e-14 BF=250
+.MODEL Q2 NPN IS=1e-14 BF=50
+.MODEL DX D IS=8e-16 VJ=1.0 RS=0 XTI=0
+* Ik vs Vka characteristic below Vref
+* and off-state current
+* Ik(min) = 0.55 mA
+GIK1 5 40 POLY(1) 8 5 -1.0E-3 1.0E-3
+RIK 40 5 1.0E4
+DIK 41 40 DX
+VIK 41 5 DC 0.723
+GIK2 3 5 POLY(1) 40 5 0.9E-6 3.7E-5
+.ENDS LT1431
+*
+.ENDS
+
+* Version 2.0 Copyright © Linear Technology Corp. 10/19/05. All rights reserved.
+*
+*CCM 5 August 1997 16:27:12 $
+*
+* Pinout matches IC Pinout
+* 1 Collector
+* 2 Comp
+* 3 V+
+* 4 Rtop
+* 5 GND-sense
+* 6 GND-force
+* 7 Rmid
+* 8 Ref
+.SUBCKT LT1431 1 2 3 4 5 6 7 8
+*
+* 10 KOhm voltage divider
+RTOP 4 7 5.0E3
+RBOT 7 5 5.0E3
+* 2.5 V voltage reference
+* with temperature and supply
+* voltage dependency
+IT1 11 5 1.0E-3
+RT1 11 5 1.0E3
+IT2 12 5 1.0E-3
+RT2 12 5 1.0E3 TC=1.0E-4
+RVREF 10 5 1.0E3
+* Vref exactly 2.5 V
+GVREF 5 10 POLY(2) 3 5 11 12 2.4987E-3 -3.5E-7 0 0 0 -0.17
+* Vref + 0.5% = 2.512 V
+*GVREF 5 10 POLY(2) 3 5 11 12 2.511E-3 -3.5E-7 0 0 0 -0.17
+* transconductance amplifier
+* input bias with cancellation for Vin > 4V
+RIN 8 16 10
+GBIAS 16 3 POLY(1) 17 5 4.8E-6 -1.2E-6
+GIB2 5 17 3 5 1.0E-3
+RIB1 17 5 1.0E3
+DIB 17 18 DX
+RIB2 18 19 1
+VIB 19 5 DC 3.2V
+* 1. pole at 18.4 Kz / 1. zero at 184 KHz
+GP1 5 20 8 10 1.0E-5
+CP1 20 21 7.79E-11
+RP11 21 5 11100
+RP12 20 5 1.0E5
+* 2. pole at 375 Kz / 2. zero at 750 KHz
+GP2 5 22 20 5 1.0E-5
+CP2 22 23 2.12E-12
+RP21 23 5 1.0E5
+RP22 22 5 1.0E5
+* 3. zero at 750 KHz / 3. pole at 2.25 MHz
+GP3 5 24 22 5 1.0E-5
+LP3 24 25 0.0318
+RP31 25 5 150E3
+RP32 24 5 300E3
+* 4. pole at 3.0 MHz
+GP4 5 26 24 5 1.0E-5
+RP4 26 5 1.0E5
+CP4 26 5 5.3E-13
+* 5. pole at 3.0 MHz
+GP5 5 27 26 5 1.0E-5
+RP5 27 5 1.0E5
+CP5 27 5 5.3E-13
+* transconductance 4 mA/V
+GGM 5 28 27 5 4.0E-3
+R15 28 2 5.0E3
+* output voltage clamp (Vout = 0 - V+)
+DNL 50 28 DX
+VNL 50 5 DC 0.782
+DPL 28 51 DX
+EPL 51 5 POLY(1) 3 5 -0.782 1.0
+* open collector output stage
+R17 2 30 1.5E3
+Q19 2 33 34 Q1
+R16 34 5 22
+Q20 3 30 31 Q1
+R18 31 5 50000
+Q22A 1 31 32 Q2
+Q22B 1 31 30 Q2
+R19 32 6 3.6
+R20 33 32 5.0E3
+R21 2 5 100000
+C3 30 1 6e-12
+C4 33 2 1e-12
+.MODEL Q1 NPN IS=1e-14 BF=250
+.MODEL Q2 NPN IS=1e-14 BF=50
+.MODEL DX D IS=8e-16 VJ=1.0 RS=0 XTI=0
+* Ik vs Vka characteristic below Vref
+* and off-state current
+* Ik(min) = 0.55 mA
+GIK1 5 40 POLY(1) 8 5 -1.0E-3 1.0E-3
+RIK 40 5 1.0E4
+DIK 41 40 DX
+VIK 41 5 DC 0.723
+GIK2 3 5 POLY(1) 40 5 0.9E-6 3.7E-5
+.ENDS LT1431
+*

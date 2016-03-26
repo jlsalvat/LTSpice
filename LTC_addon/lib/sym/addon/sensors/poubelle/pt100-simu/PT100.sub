@@ -1,0 +1,16 @@
+* Model of PT100 ellement
+* block symbol definitions
+.subckt pt100 A B
+R1 A B {Rt}
+.param A=0.0039083 B=-0.0000005775 C=0 R0=100.00
+.param Rt=R0*(1+A*SensT+B*SensT*SensT+C*SensT*SensT*SensT*(SensT-100))
+.ends pt100_1
+
+* Model of PT1000 ellement
+* block symbol definitions
+.subckt pt1000 A B
+R1 A B {Rt}
+.param A=0.0039083 B=-0.0000005775 C=0 R0=1000.00
+.param Rt=R0*(1+A*SensT+B*SensT*SensT+C*SensT*SensT*SensT*(SensT-100))
+.ends pt1000_1
+

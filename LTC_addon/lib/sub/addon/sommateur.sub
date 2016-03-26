@@ -1,0 +1,6 @@
+* 
+.subckt sommateur V1 V2 out
+B1 out 0 V=V(V1)+V(V2)
+R1 V1 0 1Meg
+R2 V2 0 1Meg
+.end

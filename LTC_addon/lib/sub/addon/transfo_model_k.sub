@@ -1,0 +1,8 @@
+*transfo utilisant le modele k de spice (mutuelle inductance)
+.SUBCKT transfo_model_K 1 2 3 4  
+*
+L1 1 2 {L1}  Rser={R1}
+L2 3 4 {L2}  Rser={R2}
+K123 L1 L2  {K}
+*
+.ENDS 

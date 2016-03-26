@@ -1,0 +1,11 @@
+* Model of NTC ellement
+* block symbol definitions
+.SUBCKT NTC_R 1 2  R0={R0} B={B}
+*.PARAM R0=10000  resistance @25degree
+*.PARAM B=3977  material constant
+.PARAM TK=273.15
+.PARAM T0=25
+RP 1 2 1G
+B1 1 2  I=V(1,2)/{R0*exp(B*(1/(TEMP+TK)-1/(T0+TK)))}
+.ENDS
+

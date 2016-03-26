@@ -1,0 +1,39 @@
+* C:\Program Files\LTC\SwCADIII\tutorial\electrotech\test\transfo_tri1.asc
+.SUBCKT transfo_etoile_triangle P1 P2 P3  N V1S V2S V3S
+.param m=1 Lp=2
+R1 P2 N 1T
+R2 P3 N 1T
+R3 P1 N 1T
+R4 V1S N 1T
+R5 V2S N 1T
+R6 V3S N 1T
+XU1 P1 N N002 N001 Transfo_ideal LP={Lp} m={m} R1=1m
+XU2 P2 N N003 V2S Transfo_ideal LP={Lp}  m={m}  R1=1m
+XU3 P3 N V1S V3S Transfo_ideal LP={Lp}   m={m}  R1=1m
+R10 V2S N002 1m
+R20 V3S N003 1m
+R30 V1S N001 1m
+.ends transfo_etoile_triangle
+
+.SUBCKT transfo_triangle_etoile P1 P2 P3 V1S V2S V3S N
+.param m=1 Lp=2
+R1 P2 P3 1T
+R2 P3 P1 1T
+R3 P1 P2 1T
+R10 V1S N 1T
+R20 V2S N 1T
+R30 V3S N 1T
+XU1 P2 P3 N V2S Transfo_Ideal LP={Lp} m={m} R1=10m
+XU2 P1 P2 N V1S Transfo_Ideal LP={Lp}  m={m} R1=10m
+XU3 P3 P1 N V3S Transfo_Ideal LP={Lp} m={m} R1=10m
+.ends transfo_triangle_etoile
+
+.SUBCKT transfo_tri 1 2 3 4 5 6 7 8 9 10 11 12
+.param m=1 Lp=2
+XU1 1 2 3 4 Transfo_Ideal LP={Lp} m={m} R1=10m
+XU2 5 6 7 8 Transfo_Ideal LP={Lp}  m={m} R1=10m
+XU3 9 10 11 12 Transfo_Ideal LP={Lp} m={m} R1=10m
+.ends transfo_tri
+.lib addon\Transfo_ideal.sub
+
+

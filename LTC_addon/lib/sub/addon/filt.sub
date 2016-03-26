@@ -1,0 +1,781 @@
+********************************************************************************
+*
+* - Ideal macromodels for aid in simulation with LTspice related to control or
+* filtering, signal processing in general.
+* 
+*									Vlad
+*
+********************************************************************************
+*
+* [CONTENTS]
+*
+* - The list of symbols in [Filt], in alphabetical order:
+*
+* - AGC		- automatic gain control
+* - DeadTime	- dead-time (digital)
+* - DeadZone	- dead-zone (analog)
+* - Delay	- time-delay (analog or digital)
+* - Diff	- analog differentiator
+* - FFT		- (continuous) Fourier transform
+* - Filter	- universal filter (separate .sub file)
+* - FreqDet	- frequency detector
+* - Gain	- buffer/gain
+* - Integ_r	- resettable integrator
+* - LeadLag	- all-pass, voltage controlled lead/lag filter
+* - LeadLag2	- 	--,,--
+* - Lim		- hard limiter
+* - MUX		- analog 8:1 multiplexer
+* - PhaseDet	- phase detector
+* - PID		- proportional-integral-derivative controller (analog, digital)
+* - PLL		- phase locked loop
+* - StateSpace	- 1st, 2nd and 3rd order state space matrices (separate .sub)
+*
+*
+* [GENERAL]
+*
+* - All the subcircuits are idealized versions to allow block-level simulation
+* without the speed penalty.
+*
+* - The updates for all the files inside [Filt] (except Filter) are mentioned at
+* the end of this file.
+*
+*
+* [SYMBOL]
+*
+* - For those symbols who use 'IN' and/or 'OUT', their explanation should be
+* self-explanatory.
+*
+* - In general, all inputs are floating and outputs are a 1 Ohm resistance,
+* except othwerwise noted.
+*
+********************************************************************************
+********************************************************************************
+*
+*			AGC - Automatic gain control
+*
+********************************************************************************
+*
+* [SYMBOL]
+*
+* GAIN		= outputs the gain, in volts;
+* FREQ		= external frequency control if f=0, internally grounded with a
+*		1GOhm.
+*
+*
+* [PARAMETERS]
+*
+* f	[Hz]	= working frequency;
+* min	[V]	= minimum estimated gain, to avoid division by zero;
+*
+*
+* [CHARACTERISTICS]
+*
+* - There's a variable moving-average filter inside with a time window of 1/2
+* period.
+*
+********************************************************************************
+.subckt AGC IN OUT GAIN FREQ
+.param f=0 min=0.5
+Ai f in 0 0 0 b a 0 MODULATOR mark=1 space=0
+Bf 0 f I=if( f==0, v(freq), f ) rpar=1
+Rf 0 freq 1G
+Ga1 0 a* a 0 1
+Ca1 a* 0 1 Rser=0 Lser=0 Rpar=0 Cpar=0 RLshunt=0 ic=0
+Ba1 0 N002 I=delay(v(a*),1/v(f)) rpar=1
+Ga2 0 aa a* N002 1
+Ra1 aa 0 R=if(f>0,f,if(v(f)<=0,1,v(f)))
+Gb1 0 b* b 0 1
+Cb1 b* 0 1 Rser=0 Lser=0 Rpar=0 Cpar=0 RLshunt=0 ic=0
+Bb1 0 N001 I=delay(v(b*),1/v(f)) rpar=1
+Gb2 0 bb b* N001 1
+Rb1 bb 0 R=if(f>0,f,if(v(f)<=0,1,v(f)))
+By 0 out I=v(gain)*v(in) rpar=1
+Bz 0 gain I=1/max( min,hypot(v(aa),v(bb))*2 ) rpar=1
+.ends AGC
+********************************************************************************
+********************************************************************************
+*
+*				Dead-time
+*
+********************************************************************************
+*
+* [PARAMETERS]
+*
+* dt	[s]	= dead-time.
+*
+* - Hidden:
+*
+* td	[s]	= LTspice's A-device specific.
+*
+*
+* [CHARACTERISTICS]
+*
+* - The input is floating and the output is the LTspice default value for the A-
+* devices, usually 1 Ohm.
+*
+********************************************************************************
+.subckt DeadTime IN OUT
+.param Vhigh=1 Vlow=0 ref=0.5 dt=1u td=10n
+Ad 0 in 0 0 0 0 1 0 AND ref={ref} td={dt+td}
+Aout 0 in 0 1 0 0 out 0 AND ref={ref} vlow={vlow} vhigh={vhigh} td={td}
+.ends DeadTime
+********************************************************************************
+********************************************************************************
+*
+*				Dead-zone
+*
+********************************************************************************
+*
+* [PARAMETERS]
+*
+* dz	[V]	= dead-zone, anything between <-dz:dz> is zero.
+*
+********************************************************************************
+.subckt DeadZone IN OUT
+.param dz=1
+Bdz 0 out I=uramp(v(in)-dz)-uramp(-v(in)-dz) Rpar=1
+.ends DeadZone
+********************************************************************************
+********************************************************************************
+*
+*				Delay, z^-1
+*
+********************************************************************************
+*
+* [PARAMETERS]
+*
+* t	[s]	= delay time, positive value (>0).
+*
+********************************************************************************
+.subckt Delay IN OUT
+Gd 0 1 in 0 1
+Td 1 0 out 0 Td={t} Z0=1
+Rout 0 out 1
+.ends Delay
+********************************************************************************
+********************************************************************************
+*
+*			Diff - Differentiator
+*
+********************************************************************************
+*
+* [PARAMETERS]
+*
+* tau	[s]	= differentiation time-constant.
+*
+* - Hidden:
+*
+* Rser	[Ohm]	= series resistance for the inductor, default 0;
+* Rpar	[Ohm]	= parallel resistance across the inductor, default 1G.
+*
+********************************************************************************
+.subckt Diff IN OUT
+.param tau=1m Rser=0 Rpar=1G
+Gd 0 out in 0 1
+Ld out 0 {tau} Rser={Rser} Rpar={Rpar} Cpar=0
+.ends Diff
+********************************************************************************
+********************************************************************************
+*
+*		FFT - (continuous time) Fourier transform
+*
+********************************************************************************
+*
+* [GENERAL]
+*
+* - Simple FFT block, currently up to 31 odd/even harmonics. If 31 are too many,
+* set {N} to be less, it will also simulate a tad faster.
+*
+*
+* [SYMBOL]
+*
+* a[0:31]	= CFT's "a" component, bus of 32 wires (31 + DC);
+* b[1:31]	= CFT's "b" component, bus of 31 wires;
+* sin[1:31]	= sine components, bus of 31 wires;
+* cos[1:31]	= cosine components, bus of 31 wires;
+*
+* - Pins 'A', 'B', 'SIN' and 'COS' need a bus, for example the connection at pin
+* 'COS' should look like this: cos[1:31], or similar; pin 'A' needs to have 32
+* instances (a[0:31]) since it holds the DC component, too. No bus means summing
+* of all nets forming that bus in particular ( V(a[0])+V(a[1])+...V(a[31]) ).
+*
+*
+* [PARAMETERS]
+*
+* f	[Hz]	= working frequency;
+* N=<0:31>	= number of harmonics;
+*
+*
+* [NOTES]
+*
+* - For more than 31 harmonics, proper B-sources can be added, but the outputs
+* need to be renamed, as well. Sadly, LTspice won't allow something like
+* a[0:31] to be used as pin description in .subckt definitions, so if N=100 is
+* your goal... good luck.
+*
+********************************************************************************
+.subckt FFT in
++ a[0] a[1] a[2] a[3] a[4] a[5] a[6] a[7] a[8]
++ a[9] a[10] a[11] a[12] a[13] a[14] a[15] a[16]
++ a[17] a[18] a[19] a[20] a[21] a[22] a[23] a[24]
++ a[25] a[26] a[27] a[28] a[29] a[30] a[31]
++ b[1] b[2] b[3] b[4] b[5] b[6] b[7] b[8]
++ b[9] b[10] b[11] b[12] b[13] b[14] b[15] b[16]
++ b[17] b[18] b[19] b[20] b[21] b[22] b[23] b[24]
++ b[25] b[26] b[27] b[28] b[29] b[30] b[31]
++ sin[1] sin[2] sin[3] sin[4] sin[5] sin[6] sin[7] sin[8]
++ sin[9] sin[10] sin[11] sin[12] sin[13] sin[14] sin[15] sin[16]
++ sin[17] sin[18] sin[19] sin[20] sin[21] sin[22] sin[23] sin[24]
++ sin[25] sin[26] sin[27] sin[28] sin[29] sin[30] sin[31]
++ cos[1] cos[2] cos[3] cos[4] cos[5] cos[6] cos[7] cos[8]
++ cos[9] cos[10] cos[11] cos[12] cos[13] cos[14] cos[15] cos[16]
++ cos[17] cos[18] cos[19] cos[20] cos[21] cos[22] cos[23] cos[24]
++ cos[25] cos[26] cos[27] cos[28] cos[29] cos[30] cos[31]
+.param f=1k N=31
+.func mafc(x)=idt(v(in)*cos(2*x*pi*f*time)-delay(v(in)*cos(2*x*pi*f*time),1/f))*f*nmax(x)
+.func mafs(x)=idt(v(in)*sin(2*x*pi*f*time)-delay(v(in)*sin(2*x*pi*f*time),1/f))*f*nmax(x)
+.func arms(x)=mafs(x)*sin(2*x*pi*f*time)
+.func armc(x)=mafc(x)*cos(2*x*pi*f*time)
+.func nmax(x)=u(N-x+.6)
+Ba0 0 a[0] i=idt(v(in)-delay(v(in),1/f))*f rpar=1
+Ba_1 0 a[1] i=mafs(1) rpar=2
+Ba_2 0 a[2] i=mafs(2) rpar=2
+Ba_3 0 a[3] i=mafs(3) rpar=2
+Ba_4 0 a[4] i=mafs(4) rpar=2
+Ba_5 0 a[5] i=mafs(5) rpar=2
+Ba_6 0 a[6] i=mafs(6) rpar=2
+Ba_7 0 a[7] i=mafs(7) rpar=2
+Ba_8 0 a[8] i=mafs(8) rpar=2
+Ba_9 0 a[9] i=mafs(9) rpar=2
+Ba_10 0 a[10] i=mafs(10) rpar=2
+Ba_11 0 a[11] i=mafs(11) rpar=2
+Ba_12 0 a[12] i=mafs(12) rpar=2
+Ba_13 0 a[13] i=mafs(13) rpar=2
+Ba_14 0 a[14] i=mafs(14) rpar=2
+Ba_15 0 a[15] i=mafs(15) rpar=2
+Ba_16 0 a[16] i=mafs(16) rpar=2
+Ba_17 0 a[17] i=mafs(17) rpar=2
+Ba_18 0 a[18] i=mafs(18) rpar=2
+Ba_19 0 a[19] i=mafs(19) rpar=2
+Ba_20 0 a[20] i=mafs(20) rpar=2
+Ba_21 0 a[21] i=mafs(21) rpar=2
+Ba_22 0 a[22] i=mafs(22) rpar=2
+Ba_23 0 a[23] i=mafs(23) rpar=2
+Ba_24 0 a[24] i=mafs(24) rpar=2
+Ba_25 0 a[25] i=mafs(25) rpar=2
+Ba_26 0 a[26] i=mafs(26) rpar=2
+Ba_27 0 a[27] i=mafs(27) rpar=2
+Ba_28 0 a[28] i=mafs(28) rpar=2
+Ba_29 0 a[29] i=mafs(29) rpar=2
+Ba_30 0 a[30] i=mafs(30) rpar=2
+Ba_31 0 a[31] i=mafs(31) rpar=2
+Bb_1 0 b[1] i=mafc(1) rpar=2
+Bb_2 0 b[2] i=mafc(2) rpar=2
+Bb_3 0 b[3] i=mafc(3) rpar=2
+Bb_4 0 b[4] i=mafc(4) rpar=2
+Bb_5 0 b[5] i=mafc(5) rpar=2
+Bb_6 0 b[6] i=mafc(6) rpar=2
+Bb_7 0 b[7] i=mafc(7) rpar=2
+Bb_8 0 b[8] i=mafc(8) rpar=2
+Bb_9 0 b[9] i=mafc(9) rpar=2
+Bb_10 0 b[10] i=mafc(10) rpar=2
+Bb_11 0 b[11] i=mafc(11) rpar=2
+Bb_12 0 b[12] i=mafc(12) rpar=2
+Bb_13 0 b[13] i=mafc(13) rpar=2
+Bb_14 0 b[14] i=mafc(14) rpar=2
+Bb_15 0 b[15] i=mafc(15) rpar=2
+Bb_16 0 b[16] i=mafc(16) rpar=2
+Bb_17 0 b[17] i=mafc(17) rpar=2
+Bb_18 0 b[18] i=mafc(18) rpar=2
+Bb_19 0 b[19] i=mafc(19) rpar=2
+Bb_20 0 b[20] i=mafc(20) rpar=2
+Bb_21 0 b[21] i=mafc(21) rpar=2
+Bb_22 0 b[22] i=mafc(22) rpar=2
+Bb_23 0 b[23] i=mafc(23) rpar=2
+Bb_24 0 b[24] i=mafc(24) rpar=2
+Bb_25 0 b[25] i=mafc(25) rpar=2
+Bb_26 0 b[26] i=mafc(26) rpar=2
+Bb_27 0 b[27] i=mafc(27) rpar=2
+Bb_28 0 b[28] i=mafc(28) rpar=2
+Bb_29 0 b[29] i=mafc(29) rpar=2
+Bb_30 0 b[30] i=mafc(30) rpar=2
+Bb_31 0 b[31] i=mafc(31) rpar=2
+Bsin_1 0 sin[1] i=arms(1) rpar=2
+Bsin_2 0 sin[2] i=arms(2) rpar=2
+Bsin_3 0 sin[3] i=arms(3) rpar=2
+Bsin_4 0 sin[4] i=arms(4) rpar=2
+Bsin_5 0 sin[5] i=arms(5) rpar=2
+Bsin_6 0 sin[6] i=arms(6) rpar=2
+Bsin_7 0 sin[7] i=arms(7) rpar=2
+Bsin_8 0 sin[8] i=arms(8) rpar=2
+Bsin_9 0 sin[9] i=arms(9) rpar=2
+Bsin_10 0 sin[10] i=arms(10) rpar=2
+Bsin_11 0 sin[11] i=arms(11) rpar=2
+Bsin_12 0 sin[12] i=arms(12) rpar=2
+Bsin_13 0 sin[13] i=arms(13) rpar=2
+Bsin_14 0 sin[14] i=arms(14) rpar=2
+Bsin_15 0 sin[15] i=arms(15) rpar=2
+Bsin_16 0 sin[16] i=arms(16) rpar=2
+Bsin_17 0 sin[17] i=arms(17) rpar=2
+Bsin_18 0 sin[18] i=arms(18) rpar=2
+Bsin_19 0 sin[19] i=arms(19) rpar=2
+Bsin_20 0 sin[20] i=arms(20) rpar=2
+Bsin_21 0 sin[21] i=arms(21) rpar=2
+Bsin_22 0 sin[22] i=arms(22) rpar=2
+Bsin_23 0 sin[23] i=arms(23) rpar=2
+Bsin_24 0 sin[24] i=arms(24) rpar=2
+Bsin_25 0 sin[25] i=arms(25) rpar=2
+Bsin_26 0 sin[26] i=arms(26) rpar=2
+Bsin_27 0 sin[27] i=arms(27) rpar=2
+Bsin_28 0 sin[28] i=arms(28) rpar=2
+Bsin_29 0 sin[29] i=arms(29) rpar=2
+Bsin_30 0 sin[30] i=arms(30) rpar=2
+Bsin_31 0 sin[31] i=arms(31) rpar=2
+Bcos_1 0 cos[1] i=armc(1) rpar=2
+Bcos_2 0 cos[2] i=armc(2) rpar=2
+Bcos_3 0 cos[3] i=armc(3) rpar=2
+Bcos_4 0 cos[4] i=armc(4) rpar=2
+Bcos_5 0 cos[5] i=armc(5) rpar=2
+Bcos_6 0 cos[6] i=armc(6) rpar=2
+Bcos_7 0 cos[7] i=armc(7) rpar=2
+Bcos_8 0 cos[8] i=armc(8) rpar=2
+Bcos_9 0 cos[9] i=armc(9) rpar=2
+Bcos_10 0 cos[10] i=armc(10) rpar=2
+Bcos_11 0 cos[11] i=armc(11) rpar=2
+Bcos_12 0 cos[12] i=armc(12) rpar=2
+Bcos_13 0 cos[13] i=armc(13) rpar=2
+Bcos_14 0 cos[14] i=armc(14) rpar=2
+Bcos_15 0 cos[15] i=armc(15) rpar=2
+Bcos_16 0 cos[16] i=armc(16) rpar=2
+Bcos_17 0 cos[17] i=armc(17) rpar=2
+Bcos_18 0 cos[18] i=armc(18) rpar=2
+Bcos_19 0 cos[19] i=armc(19) rpar=2
+Bcos_20 0 cos[20] i=armc(20) rpar=2
+Bcos_21 0 cos[21] i=armc(21) rpar=2
+Bcos_22 0 cos[22] i=armc(22) rpar=2
+Bcos_23 0 cos[23] i=armc(23) rpar=2
+Bcos_24 0 cos[24] i=armc(24) rpar=2
+Bcos_25 0 cos[25] i=armc(25) rpar=2
+Bcos_26 0 cos[26] i=armc(26) rpar=2
+Bcos_27 0 cos[27] i=armc(27) rpar=2
+Bcos_28 0 cos[28] i=armc(28) rpar=2
+Bcos_29 0 cos[29] i=armc(29) rpar=2
+Bcos_30 0 cos[30] i=armc(30) rpar=2
+Bcos_31 0 cos[31] i=armc(31) rpar=2
+.ends FFT
+********************************************************************************
+********************************************************************************
+*
+*			FreqDet - Frequency detector
+*
+********************************************************************************
+*
+* [PARAMETERS]
+*
+* limit	[s]	= the lowest estimate for the period, default 1ns ( => maximum
+*		1GHz possible);
+*
+* - Hidden:
+*
+* ic	[V]	= initial conditions for aid in avoiding large lock times in the
+*		beginning, default 2*pi*f/K0.
+*
+* - Hidden:
+*
+* tripdt[s]	= LTspice's specific for A-devices, default 1ns.
+*
+*
+* [CHARACTERISTICS]
+*
+* - {limit} can be null, it's there to avoid initial division by zero. After the
+* frequency is detected it no longer matters.
+*
+********************************************************************************
+.subckt FreqDet in out
+.param  Cres=100*tripdt limit=1m tripdt=1n
+Bx 0 i I=u(ddt(v(in))) rpar=10
+Ax 2 0 i 0 0 2 1 0 DFLOP td={Cres} vlow=0
+Cx1 1 0 {Cres}
+Cx2 2 0 {Cres}
+Bper 0 per I=idt(0,idt(v(1),0,v(2)),i(cx1))+idt(0,idt(v(2),0,v(1)),i(cx2)) Rpar=1
+Bout 0 out I=if(v(per)<limit,0,1/v(per)) Rpar=1
+.ends FreqDet
+********************************************************************************
+********************************************************************************
+*
+*				Gain - Gain/Buffer
+*
+********************************************************************************
+*
+* [PARAMETERS]
+*
+* G [linear/dB]	= sets the gain;
+* Rout	[Ohm]	= output resistance, default 1 Ohm;
+* dB=<0,1>	= whether the gain should be linear <0> or in decibels <1>.
+*
+********************************************************************************
+.subckt Gain IN OUT
+.param G=-1 Rout=1 dB=0
+Gain 0 out in 0 {if(dB==0,G,10**(G/20))/Rout}
+Rout out 0 {Rout}
+.ends Gain
+********************************************************************************
+********************************************************************************
+*
+*			Integ_r - Resetable Integrator
+*
+********************************************************************************
+*
+* [SYMBOL]
+*
+* CTL		= external reset with logic levels between <0,1>;
+* TAU		= external fixed/variable period of integration if tau=0.
+*
+* - Both control pins are internally grounded with a 1GOhm resistor.
+*
+*
+* [PARAMETERS]
+*
+* tau	[s]	= the period of integration;
+*
+********************************************************************************
+*
+*		Input
+*		|   Output
+*		|  |   Reset
+*		|  |   |     External period
+*		|  |   |     |
+.subckt Integ_r IN OUT RESET TAU
+.param tau=1m
+Bi 0 out i=idt(v(in),0,v(reset))/if(tau==0,v(tau),tau) rpar=1
+Rt 0 tau 1G
+Rr 0 reset 1G
+.ends Integ_r
+********************************************************************************
+********************************************************************************
+*
+*	LeadLag, LeadLag2 - Voltage-controlled Lead/Lag (all-pass)
+*
+********************************************************************************
+*
+* [GENERAL]
+*
+* - They both allow for <-inf:inf> control of the phase but the first one is
+* a passive LC approach while the second one involves differentiation and sin/
+* cos multiplication.
+*
+*
+* [SYMBOL]
+*
+* CTL		= external phase control, internally grounded with 1GOhm.
+*
+*
+* [PARAMETERS]
+*
+* f	[Hz]	= working frequency;
+* phi	[rad]	= phase displacement control;
+*
+* - Hidden:
+*
+* q	[rad]	= phase tolerance, defaults to 1u (passive version, only).
+*
+*
+* [CHARACTERISTICS]
+*
+* - The passive version has a glitch near <-pi> so, as a workaround, there is a
+* minor tolerance, q=-pi+1u.
+*
+* - Because of the way the 1st one is implemented, there may be some transients
+* lasting a few periods around sudden phase changes. The 2nd version has stable
+* amplitude after the initial moment, but it may suffer from initial spikes if
+* the input doesn't start from zero (e.g. cosine).
+*
+* - It works for any kind of waveform but, of course, the results are only valid
+* for sine waves.
+*
+*
+* [NOTES]
+*
+* - If phi<>0, anything at pin 'CTL' is ignored.
+*
+********************************
+*
+*	Passive L+C
+*
+********************************
+.subckt LeadLag IN OUT CTL
+.param f=1  phi=0 q=1u
+.func mod(x,y)=x-floor(x/y)*y
+.param _phi=if( phi==0, 0, mod( phi-pi+q,2*(pi-q) )-pi+q )
+Gc 0 1 in 0 2
+C 1 0 Q=if( v(phi)<=0,0,x/(tan({pi}+v(phi)/2)*(2*pi*f)) ) ic=0
+Rc 1 0 1
+Rc2 1 3 R=if( v(phi)>0,1,1e6 )
+Gl 0 2 in 0 2
+L 2 0 Flux=if( v(phi)>0,0,x/tan({pi}/2+v(phi)/2)/(2*{pi}*{f}) ) ic=0 Rser=0
+Rl 2 0 1
+Rl2 3 2 R=if( v(phi)<=0,1,1e6 )
+Bphi 0 phi i=if(_phi==0,mod( v(ctl)-pi+q,2*(pi-q))-pi+q,_phi) rpar=1
+Gout 0 out in 3 1
+Rout out 0 1
+Rctl 0 ctl 1G
+.ends LeadLag
+****************************************
+*
+*	sin/cos phase control
+*
+****************************************
+.subckt LeadLag2 IN OUT CTL
+.param f=50 phi=-pi/4
+Bdiff 0 1 I=ddt(v(in))/2/pi/f/1k*if( phi==0,sin(v(ctl)),sin(phi) ) Rpar=0
+Bn 0 1 i=v(in)*if( phi==0,cos(v(ctl)),cos(phi) )/1k Rpar=1k
+Rctl 0 CTL 1G
+Gout 0 OUT 1 0 1
+Rout OUT 0 1
+.ends LeadLag2
+********************************************************************************
+********************************************************************************
+*
+*				Lim - Hard limiter
+*
+********************************************************************************
+*
+* [PARAMETERS]
+*
+* Max,Min[V]	= the upper and lower limits.
+*
+*
+* [NOTES]
+*
+* - It's ultra-fast so imposing a timestep may be needed if used in more simple
+* schematics.
+*
+********************************************************************************
+.subckt Lim IN OUT
+.param Min=-1 Max=1
+Glimit 0 OUT IN 0 table({Min},{Min},{Max},{Max})
+Rout 0 OUT 1
+.ends Lim
+********************************************************************************
+********************************************************************************
+*
+*			MUX - Analog multiplexer
+*
+********************************************************************************
+*
+* [CHARACTERISTICS]
+*
+* - V(CTL) activates one of the inputs numbered from '1' to '8' when reaching
+* the corresponding voltage level. Only the integer part of the control voltage
+* is considered.
+*
+********************************************************************************
+.subckt MUX 1 2 3 4 5 6 7 8 OUT CTL
+BMUX 0 out i=table(int(v(ctl)),0,0,1,v(1),2,v(2),3,v(3),4,v(4),5,v(5),6,v(6),
++ 7,v(7),8,v(8),9,0) Rpar=1
+.ends MUX
+********************************************************************************
+********************************************************************************
+*
+*			PhaseDet - Phase detector
+*
+********************************************************************************
+*
+* [PARAMETERS]
+*
+* f	[Hz]	= working frequency;
+* deg=<0,1>	= whether output is in radians <0> or degrees <1>.
+*
+* - Hidden:
+*
+* per	[s]	= time window for the moving-average, defaults to <1/f>;
+* Rpar	[Ohm]	= parallel resistance across integrating capacitors, default 1G.
+*
+*
+* [NOTES]
+*
+* - Output is delayed by one period but, if there is no offset at the input, it
+* can be changed to one half (per=0.5/f) for a faster response.
+*
+********************************************************************************
+.subckt PhaseDet in rad deg
+.param f=50 per=1/f deg=1 Rpar=1G
+Asc 0 in 0 0 0 2 1 0 MODULATOR mark={f} space=0
+Ts 1 0 11 0 Td={per} Z0=1
+Rs 11 0 1
+Gs 0 s 1 11 1
+Cs s 0 {per} ic=0 Rpar={Rpar}
+Tc 2 0 22 0 Td={per} Z0=1
+Rc 22 0 1
+Gc 0 c 2 22 1
+Cc c 0 {per} ic=0 Rpar={Rpar}
+Br 0 out I=atan2(v(c),v(s)) Rpar={(180/pi)**u(deg)}
+.ends PhaseDet
+********************************************************************************
+********************************************************************************
+*
+*		PID - Proportional-integral-derivative controller
+*
+********************************************************************************
+*
+* [PARAMETERS]
+*
+* Kp		= proportional value;
+* Ki		= integral value;
+* Kd		= derivative value;
+* Ts		= sampling time (PIDd only).
+*
+*
+* [CHARACTERISTICS]
+*
+* - Any combination of {Kp}, {Ki} or {Kd} works. Because of that, the default
+* values are null, for each, so that when the symbol is placed on the schematic,
+* the unwanted ones can be safely deleted from the SpiceLine to not take space.
+*
+********************************
+*
+*	Analog version
+*
+********************************
+.subckt PID IN OUT
+.param Kp=0 Ki=0 Kd=0
+.param x=if( Kd==0,1, if( Kp==0 & Ki==0,0,2 ) )
++ y=if( Ki==0,0, if( Kd==0 & Kp==0,1, if( Kp==0,2,3 ) ) )
++ _Kp=if( Kp==0,1,Kp ) _Ki=if( Ki==0,1,Ki ) _Kd=if( Kd==0,1,Kd )
+Gin 0 1 in 0 1
+Lpid 1 {x} {_Kd} Rser=0 Rpar=0 Cpar=0 ic=0
+Rpid {x} {y} {_Kp} noiseless
+Cpid {y} 0 {1/_Ki} Rser=0 Lser=0 RLshunt=0 Rpar=0 Cpar=0 ic=0
+Gout 0 out 1 0 1
+Rout out 0 1
+.ends PID
+********************************
+*
+*	Digital version
+*
+********************************
+*
+* [NOTES]
+*
+* - Input impedance is Rin=1G.
+*
+********************************
+.subckt PIDd IN OUT
+Td in 0 d 0 Td={Ts} Z0=1G
+Ti 0 i2 i1 0 Td={Ts} Z0=1
+Rd d 0 1G
+Gi 0 out i1 0 {Ki*Ts}
+Gd 0 out in d {Kd/Ts}
+Gp 0 out in 0 {Kp}
+Ri i2 0 1
+G_i 0 i1 in i2 1
+Rout out 0 1
+.param Kp=0 Ki=0 Kd=0 Ts=1m
+.ends PIDd
+********************************************************************************
+********************************************************************************
+*
+*			PLL - Phase-Locked Loop
+*
+********************************************************************************
+*
+* [GENERAL]
+*
+* - PLL with single/quadrature inputs. It uses V(in)*cos+V(qin)*sin and a moving
+* average filter for better riple rejection, where V(INq) is either the normal
+* used 'INq' input, or the -pi/2 delayed V(IN) if V(INq) is grounded/floating.
+*
+*
+* [SYMBOL]
+*
+* IN,INq	= normal and quadrature inputs (INq internally grounded with a
+*		1GOhm);
+* SIN,COS	= unity sine/cosine outputs;
+* FREQ		= output pulsation divided by VCO's gain;
+* THETA		= wt angle, atan2(sin,-cos)+pi;
+*
+* - For single-phase applications use 'IN' input.
+*
+*
+* [PARAMETERS]
+*
+* f	[Hz]	= central frequency;
+* Kd	[V/V]	= phase detector's gain;
+* K0	[V/V]	= VCO's gain;
+* tau1,tau2[s]	= active loop filter's time constants;
+* fc=<0,1>	= whether the internal LF is disabled <0> or enabled <1>.
+*
+* - Hidden:
+*
+* ic	[V]	= initial conditions for aid in avoiding large lock times in the
+*		beginning, default 2*pi*f/K0.
+*
+*
+* [CHARACTERISTICS]
+*
+* - Sometimes, the PI loop filter suffers from a lack of a proper explanation,
+* generating confusion as to what time constant has which resistor where so, to
+* be specific, it is of this form:
+*			 R2	  C
+*			_____
+*		    ---|_____|----||----
+*	     R1	   |	    |\		|	
+*	   _____   |	    | \		|
+*	--|_____|--o--------|  >--------o--
+*			    | /
+*			    |/
+* therefore tau1=R1*C and tau2=R2*C. Even more specific, the transfer function
+* is: Hs=Kp+1/(s*tau1) or Hs=Kp*[1+1/(s*tau2)], where Kp=tau2/tau1.
+*
+* - The internal low-pass filter is an adaptive moving-average, making the two
+* parameters {tau1} and {tau2} a bit lower than what an LPLL design formulas
+* would give.
+*
+*
+* [NOTES]
+*
+* - The default values are Kd=1 and K0=2*pi, resulting in pin 'FREQ' giving the
+* exact frequency. Also, the default values should make the block behave well
+* enough in a 50Hz application.
+*
+********************************************************************************
+*
+*	    input
+*	    |	quadrature input
+*	    |	|   unity sine output
+*	    |	|   |	unity cosine output
+*	    |	|   |	|   frequency output
+*	    |	|   |	|   |	 angle
+*	    |	|   |	|   |	 |
+.subckt PLL IN INq SIN COS FREQ THETA
+.param  f=50  Kd=1  K0=2*pi  tau1=5m  tau2=125m  ic=2*pi*f/K0 fc=1
+Rinq 0 inq 1G
+Bq 0 in* I=delay(v(in),if(v(freq)<=0,.25/f,.25*K0/2/pi/v(freq))) Rpar=1
+Cq in* 0 {1m/f} ic=0
+BKd 0 111 I=V(in)*V(cos)+if(v(inq)==0,V(in*),V(inq))*V(sin) Rpar={Kd}
+GMAF 0 11 111 0 1
+CMAF 11 0 1 ic=0
+BMAFd 0 N001 I=delay(v(11),if(v(freq)<=0,.5/f,.5*K0/2/pi/v(freq))) Rpar=1
+CMAFd N001 0 {1m/f} ic=0
+GMAFo 0 1 11 N001 1
+RMAFo 1 0 R=if(V(freq)<=0, f/2, 2*pi*v(freq)/2/K0)
+GLF 0 freq {111**inv(fc)} 0 1
+CLF freq 0 {tau1} ic={ic} Rpar=0 Lser=0 RLshunt=0 Rser={tau2/tau1} Lser=0 RLshunt=0 Rpar=0 Cpar=0
+A_iq freq 0 0 0 0 cos sin 0 MODULATOR mark={K0/2/pi} space=0
+B_wt 0 theta I=pi-atan2(v(sin),-v(cos)) tripdv=3 tripdt={1u/f} Rpar=1
+.ends PLL
+********************************************************************************
+*
+* [UPDATES]
+*
+* 2013.01.19	- Overall modifications and improvements.
+* 2013.01.27	- Modified PhaseDet so now it only has one output which can be
+*		either in radians or degrees.
+*		- Fixed the differentiator's response for extreme conditions.
+* 2013.02.03	- Added parameter {fc} to the PLL's subcircuit and info.
+*		- Changed {Gain} back to {G} while resizing the symbol a bit.
+*		- Minor corrections.
+* 2013.02.04	- Corrected the node error in PLL and changed its default symbol
+*		values.
+*
+********************************************************************************

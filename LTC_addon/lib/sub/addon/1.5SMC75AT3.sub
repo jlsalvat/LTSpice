@@ -1,0 +1,34 @@
+* File: 1.5SMC75AT3.sub
+* Suppressor diode: TVS 1.5SMC75AT3, ONSEMI
+*
+*             C0
+*         ----||----------------
+*        |                      |
+*        |    L1        -----   |
+* 10 o---o--/\/\/\--o--| B-I |--o---o 2
+*                   |   -----   |
+*                   |           |
+*                   o----||-----o
+*                   |    C1     |
+*                   |           |
+*                    ---->|-----
+*                        D1
+*
+* 10=anode 2=cathode
+.subckt 1.5SMC75AT3 10 2
+C0 10 2 1p
+L1 10 1 4n
+C1 1 2 100p
+R1 1 2 1e9
+D1 1 2 DM
+.model DM D (Is=1e-6 N=2 RS=.005 Cjo=500p TT=10n)
+*
+* Over-voltage,current pairs from diagram in the datasheet
+* 1.1,1, 1.55,2, 2.5,5, 3.7,10, 5.5,20, 10.5,50, 18,100, 180,1000)
+* over-voltage,current specification from datasheet
+* 64.1V,5u  75V,1m
+* Combined data in one B-current-source
+B1 2 1 I=TABLE(V(2,1), 0,0, 10,3u, 64.1, 5u, 75,1m, 76.1,1, 
++ 76.55,2, 77.5,5, 78.7,10, 80.5,20, 85.5,50, 93,100, 255,1000)
+*
+.ends

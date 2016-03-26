@@ -1,0 +1,63 @@
+* filtre IIR Infinite Impulsionnal response ou filtre à réponse impulsionnelle infinie 
+.subckt IIR vinp out 
+XS  Vinp Vin SMPHOLD toff={1/(fe)}
+XU2 N011 N006 N012 sommateur
+XU3 vin N001 delay fs={fe}
+XU6 vin N011 gain     K={b0}
+XU7 N001 N006 gain    K={b1}
+XU4 N012 N007 N013 sommateur
+XU8 N001 N002 delay fs={fe}
+XU5 N002 N007 gain    K={b2}
+XU9 N003 N008 gain    K={b3}
+XU10 N004 N009 gain   K={b4}
+XU12 N002 N003 delay fs={fe}
+XU13 N013 N008 N014 sommateur
+XU14 N003 N004 delay fs={fe}
+XU15 N014 N009 N015 sommateur
+XU1 N004 N005 delay fs={fe}
+XU16 N015 N010 N016 sommateur
+XU17 N005 N010 gain   K={b5}
+XU11 N018 N027 gain   K={a1}
+XU18 N019 N023 gain   K={a2}
+XU19 N020 N024 gain   K={a3}
+XU20 N021 N025 gain   K={a4}
+XU21 out N018 delay fs={fe}
+XU23 N018 N019 delay fs={fe}
+XU24 N027 N023 N028 sommateur
+XU25 N019 N020 delay fs={fe}
+XU26 N028 N024 N029 sommateur
+XU27 N029 N025 N030 sommateur
+XU28 N020 N021 delay fs={fe}
+XU29 N017 N016 out sommateur
+XU22 N021 N022 delay fs={fe}
+XU30 N022 N026 gain   K={a5}
+XU31 N030 N026 N017 sommateur
+
+.ends
+
+.SUBCKT SMPHOLD in out 
+S1 OUTS INS CLK 0 MySwitch
+V1 clk 0 PULSE(0 5 0 10p 10p 1n {toff})
+C1 outs 0 100p
+E1 ins 0 in 0 1
+E2 out 0 outs 0 1
+.MODEL MySwitch SW(Vt=0.5 Ron=0.1 Roff=1G)
+.ends
+
+.subckt delay in out
+Ez out 0 LAPLACE {V(in)} {exp(-s/fs)}
+Raux out 0 1T
+.ends
+
+.subckt gain in out
+bz out 0 V={V(in)*K} 
+Raux out 0 1T
+.ends
+
+.subckt sommateur V1 V2 out
+B1 out 0 V=V(V1)+V(V2)
+R1 V1 0 1Meg
+R2 V2 0 1Meg
+.ends
+
+

@@ -1,0 +1,78 @@
+Version 4
+SymbolType CELL
+LINE Normal -264 0 -272 -8
+LINE Normal -272 8 -264 0
+LINE Normal -94 129 -94 18
+LINE Normal -150 129 -94 129
+LINE Normal -109 129 -94 112
+LINE Normal -127 129 -109 129
+LINE Normal -94 92 -127 129
+LINE Normal -94 73 -94 92
+LINE Normal -145 129 -94 73
+LINE Normal -48 19 -48 130
+LINE Normal 8 19 -48 19
+LINE Normal -33 19 -48 36
+LINE Normal -15 19 -33 19
+LINE Normal -48 56 -15 19
+LINE Normal -48 75 -48 56
+LINE Normal 3 19 -48 75
+LINE Normal 32 146 -176 146
+LINE Normal 19 141 32 146
+LINE Normal 33 146 19 141
+LINE Normal 21 154 33 146
+LINE Normal -176 1 -176 161
+LINE Normal -181 14 -176 1
+LINE Normal -176 0 -181 14
+LINE Normal -168 12 -176 0
+LINE Normal -94 156 -94 129 1
+LINE Normal -48 156 -48 130 1
+LINE Normal -188 19 -48 19 1
+LINE Normal -187 129 -149 129 1
+LINE Normal -187 129 -187 129 1
+LINE Normal -148 142 -171 136 2
+LINE Normal -128 137 -148 142 2
+LINE Normal -107 141 -128 137 2
+LINE Normal -89 126 -107 141 2
+LINE Normal -63 74 -89 126 2
+LINE Normal -49 19 -63 74 2
+LINE Normal -47 0 -49 19 2
+LINE Normal -31 138 -16 122
+LINE Normal -102 138 -31 138
+LINE Normal -88 133 -102 138
+LINE Normal -102 138 -88 133
+LINE Normal -88 142 -102 138
+RECTANGLE Normal 159 208 -272 -32
+RECTANGLE Normal 73 208 159 85
+TEXT -109 164 Left 2 fp1
+TEXT -60 165 Left 2 fs1
+TEXT -233 19 Left 2 Asc
+TEXT -221 127 Left 2 As
+TEXT -228 -17 Left 2 Att(f) en dB
+TEXT -224 151 Left 2 0dB
+TEXT 39 144 Left 2 f
+TEXT -42 105 Left 2 Ap :ripple
+TEXT 70 74 Left 2 debug
+WINDOW 38 -86 195 Center 2
+WINDOW 40 -86 -46 Center 2
+WINDOW 39 -90 -81 Center 2
+SYMATTR SpiceModel Bessel
+SYMATTR SpiceLine2 G=1 Asc=3 Ap=1 As=40 N=0
+SYMATTR SpiceLine fp1=400 fs1=500 fs2=0 fp2=0
+SYMATTR Prefix X
+SYMATTR ModelFile addon\filter.sub
+SYMATTR Description LowPass filter: See filter.sub for a detailed description and usage.
+PIN -272 0 LEFT 8
+PINATTR PinName in
+PINATTR SpiceOrder 1
+PIN 160 0 RIGHT 8
+PINATTR PinName out
+PINATTR SpiceOrder 2
+PIN 160 112 RIGHT 8
+PINATTR PinName order
+PINATTR SpiceOrder 3
+PIN 160 176 RIGHT 8
+PINATTR PinName choice
+PINATTR SpiceOrder 4
+PIN 48 208 NONE 8
+PINATTR PinName not used
+PINATTR SpiceOrder 5

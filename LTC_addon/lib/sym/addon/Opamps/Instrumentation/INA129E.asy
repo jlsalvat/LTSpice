@@ -1,0 +1,65 @@
+Version 4
+SymbolType CELL
+LINE Normal -64 -64 -64 64
+LINE Normal -64 -64 64 0
+LINE Normal -64 64 64 0
+LINE Normal 0 -64 0 -32
+LINE Normal -32 64 -32 48
+LINE Normal -48 -48 -56 -48
+LINE Normal -52 -44 -52 -52
+LINE Normal -48 48 -56 48
+LINE Normal 8 -40 16 -40
+LINE Normal 12 -36 12 -44
+LINE Normal -28 56 -20 56
+LINE Normal 32 64 32 16
+LINE Normal -56 -24 -56 -8
+LINE Normal -56 -24 -52 -24
+LINE Normal -48 -20 -52 -24
+LINE Normal -48 -20 -52 -16
+LINE Normal -56 -16 -52 -16
+LINE Normal -48 -12 -52 -16
+LINE Normal -48 -12 -48 -8
+LINE Normal -56 8 -56 24
+LINE Normal -56 8 -52 8
+LINE Normal -48 12 -52 8
+LINE Normal -48 12 -52 16
+LINE Normal -56 16 -52 16
+LINE Normal -48 20 -52 16
+LINE Normal -48 20 -48 24
+TEXT -57 -38 Left 2 +In
+TEXT -57 40 Left 2 -In
+TEXT -34 39 Left 2 -V
+TEXT -5 -22 Left 2 +V
+TEXT 41 0 Left 2 Out
+TEXT 39 47 VLeft 2 Ref
+WINDOW 0 20 -44 Left 2
+WINDOW 3 -45 0 Left 2
+SYMATTR Value INA129E
+SYMATTR Prefix X
+SYMATTR SpiceModel addon\INA129E.mod
+SYMATTR Value2 INA129E
+SYMATTR Description Instrumentation Amplifier, TI
+PIN -64 -48 RIGHT 8
+PINATTR PinName 1
+PINATTR SpiceOrder 1
+PIN -64 48 RIGHT 8
+PINATTR PinName 2
+PINATTR SpiceOrder 2
+PIN 0 -64 RIGHT 8
+PINATTR PinName 3
+PINATTR SpiceOrder 3
+PIN -32 64 RIGHT 8
+PINATTR PinName 4
+PINATTR SpiceOrder 4
+PIN 64 0 TOP 8
+PINATTR PinName 5
+PINATTR SpiceOrder 5
+PIN 32 64 RIGHT 8
+PINATTR PinName 6
+PINATTR SpiceOrder 6
+PIN -64 -16 RIGHT 8
+PINATTR PinName 7
+PINATTR SpiceOrder 7
+PIN -64 16 RIGHT 8
+PINATTR PinName 8
+PINATTR SpiceOrder 8

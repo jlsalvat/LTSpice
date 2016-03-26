@@ -1,0 +1,29 @@
+* C:\Program Files\LTC\SwCADIII\tutorial\driver\PWM.asc
+.subckt pwm1 in pwm F1={f}
+.param C=0.001/{f}
+XU1 N004 0 rampe opamp VCC=10 Aol=100K GBW=10Meg
+C1 rampe N004 {C}
+Q1 N003 N001 N004 0 2N2222
+R1 N004 -1V 1k
+V2 -1V 0 -1
+XU2 rampe N006 schmtbuf VIP=2 VIN=1 VOH=2.8 VOL=0.4 trise=10n tfall=10n
+R2 N006 N001 1k
+R3 N001 0 1k
+R4 N003 rampe 1k
+R5 rampe 0 1Meg
+V3 N002 0 5
+R6 N002 pwm 1k
+XU3 N005 rampe N002 0 pwm 0 LM111
+XU4 N007 N008 N005 opamp VCC=10 Aol=100K GBW=10Meg
+R7 N008 in 10k
+R8 0 N008 10k
+R9 N007 -1V 10k
+R10 N005 N007 10k
+.model NPN NPN
+.model PNP PNP
+.lib C:\Program Files\LTC\SwCADIII\lib\cmp\standard.bjt
+* VIn entre 0 et 1V
+.lib occomp.lib
+.lib opamp.sub
+.lib schmtbuf.sub
+.ends

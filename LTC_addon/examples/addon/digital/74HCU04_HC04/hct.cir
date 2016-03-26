@@ -1,0 +1,176 @@
+HCMOS BERKELEY SPICE MODELS
+* HCT.CIR
+* HC AND HCT PRODUCT FAMILY
+* STANDARD LOGIC PRODUCT GROUP
+* PHILIPS SEMICONDUCTORS
+*
+* Version Date       By   Remarks
+* ---------------------------------------------------------------------
+*    1.05 10/27/2005 RRV  Updated HC/T04 and HCU04 models
+*    1.04 09/22/2003 RM   Active High Enable for SWI2 and SWI2T
+*
+*--------------------------------------------------------------*
+*SIMULATION MODULES OF CMOS LOGIC PARTS OF PHILIPS HCMOS FAMILY*
+*                   BERKELEY SPICE FORMAT                      *
+*--------------------------------------------------------------*
+* IN ORDER TO SIMULATE A SPECIFIC HCMOS DEVICE, GO TO THE END  *
+* OF THE FILE UNDER HEADING 'START RUNNING CIRCUIT MODEL' AND  *
+* REMOVE THE COMMENT STATEMENT '*' BEFORE THE REQUIRED DEVICE. *
+* ALL OTHER DEVICES MUST HAVE AN '*' COMMENT STATEMENT.        *
+* IF YOU LIKE TO SIMULATE WITH FAST OR SLOW PARAMETERS, GO TO  *
+* HEADING 'PROCESS MODELS' AND REMOVE THE COMMENT STATEMENT '*'*
+* BEFORE THE REQUIRED PROCESS MODEL.                           *
+* YOU MAY ONLY SIMULATE ONE DEVICE AT THE TIME.                *
+* THE LOAD CIRCUIT AND SIMULATION TIMING SHOULD NORMALLY BE    *
+* ADAPTED TO YOUR SPECIFIC SITUATION.                          *
+*--------------------------------------------------------------*
+
+******************************************************************
+*                                                                *
+* These HCMOS models represent only one data input and one output*
+* of the device. Devices with a 3-state output buffer also have  *
+* an Output Enable (OE) input. The HC138 also has an Input Enable*
+* (EN) input. Other control inputs such as DIR or CLK inputs are *
+* not modeled. Circuitry between the input and output buffers are*
+* also omitted, such as gates, registers, latches, mux's and     *
+* intermediate buffers. One result of this is that HC models do  *
+* not show the exact function of the device.  Another result of  *
+* this is that propagation delays in SPICE will not necessarily  *
+* match with the published AC timing specifications in the device*
+* datasheet.                                                     *
+*                                                                *
+******************************************************************
+
+***********************************************************
+
+.OPTIONS  ACCT   LIST  OPTS  ITL5=25000  NOMOD
+
+
+* Nominal parameters
+* .INC c:\msim62\hcmos\hc_tnomi.cir
+
+* Fast parameters
+* .INC c:\msim62\hcmos\hc_tfast.cir
+
+* Slow parameters
+* .INC c:\msim62\hcmos\hc_tslow.cir
+
+
+*************  START RUNNING CIRCUIT MODEL  **************
+
+*XHC00     2  3  1  0        INV2
+*XHCT00    2  3  1  0        INV2T
+*XHC04     2  3  1  0        INV1
+*XHCT04    2  3  1  0        INV1T
+XHCU04    2  3  1  0        INV0
+*XHC14     2  3  1  0        INVSMT
+*XHCT14    2  3  1  0        INVSMTT
+*XHC32     2  3  1  0        NINV1
+*XHCT32    2  3  1  0        NINV1T
+*XHC74     2  3  1  0        INV1
+*XHCT74    2  3  1  0        INV1T
+*XHC123    2  3  1  0        INV1
+*XHCT123   2  3  1  0        INV1T
+*XHC132    2  3  1  0        INVSMT
+*XHCT132   2  3  1  0        INVSMTT
+*XHC138    2  5  3  1  0     NANDINV
+*XHCT138   2  5  3  1  0     NANDINVT
+*XHC161    2  3  1  0        INV2
+*XHCT161   2  3  1  0        INV2T
+*XHC163    2  3  1  0        INV2
+*XHCT163   2  3  1  0        INV2T
+*XHC244    2  5  3  1  0     NINV3
+*XHCT244   2  5  3  1  0     NINV3T
+*XHC245    2  5  3  1  0     NINV3
+*XHCT245   2  5  3  1  0     NINV3T
+*XHC273    2  3  1  0        NINV1
+*XHCT273   2  3  1  0        NINV1T
+*XHC373    2  5  3  1  0     NINV3
+*XHCT373   2  5  3  1  0     NINV3T
+*XHC374    2  5  3  1  0     NINV3
+*XHCT374   2  5  3  1  0     NINV3T
+*XHC595    2  5  3  1  0     NINV3
+*XHCT595   2  5  3  1  0     NINV3T
+*XHC4040   2  3  1  0        NINV1
+*XHCT4040  2  3  1  0        NINV1T
+*XHC4051   2  3  4  5  1  0  SWI1
+*XHCT4051  2  3  4  5  1  0  SWI1T
+*XHC4052   2  3  4  5  1  0  SWI1
+*XHCT4052  2  3  4  5  1  0  SWI1T
+*XHC4053   2  3  4  5  1  0  SWI1
+*XHCT4053  2  3  4  5  1  0  SWI1T
+*XHC4066   2  3  4  1  0     SWI2
+*XHCT4066  2  3  4  1  0     SWI2T
+*XHC4316   2  3  4  5  1  0  SWI3
+*XHCT4316  2  3  4  5  1  0  SWI3T
+*XHC4538   2  3  1  0        INVSMT
+*XHCT4538  2  3  1  0        INVSMTT
+
+
+*********************** EXTERNAL TEST LOAD ************************
+*R1  3  1  1K
+* Use only for 3-state Tplz
+
+*R1  3  0  1K
+* Use only for 3-state Tphz
+
+*R1  3  0  1K
+C1  3  0  50P
+* Datasheet specifies Cload only. 
+*******************************************************************
+
+
+VCC   1  0  DC   4.5
+VIN1  2  0  PULSE 0  4.5  5N  6N  6N  40N  80N
+
+VEN   5  0  DC   0.0
+* Use for HC(T)138/244/245/373/374/595
+
+***************************** SWITCH *******************************
+
+****Use ONLY with TRAN. ANAL. (4051 / 4052 / 4053 / 4066 / 4316)****
+
+*VCC   1  0  DC    4.5
+*VIN1  2  0  PULSE 0  4.5  5N  6N  6N  80N  100N
+*VIN2  3  0  DC    4.5
+
+*VEE   5  0  DC    0.0  
+*Do not use with 4066
+
+*RZ    4  0  1K
+*CL    4  0  50P
+********************************************************************
+
+
+* Use this part only for 4051 - 4053 and the 4316 Ron calculations *
+*VEE   5  0  DC  -4.5
+*VIN2  2  0  DC   4.5
+
+*VIN3  3  5  PULSE 0  4.5  5N  6N  6N  40N  80N
+*Only for TRAN
+
+*VIN4  3  5  DC   9.0
+*ILAST 4  5  DC   1mA
+*C2    4  0  50P
+********************************************************************
+
+
+******* Use this part only for the 4066 Ron calculations ***********
+*VIN2  2  0  DC   4.5
+
+*VIN3  3  0  PULSE 0  4.5  5N  6N  6N  40N  80N
+*Only for TRAN
+
+*VIN4  3  0  DC   4.5
+*ILAST 4  0  DC   1mA
+*C2    4  0  50P
+********************************************************************
+
+.TRAN  1N   80N
+.PRINT TRAN  V(2)  V(3)
+
+*PRINT TRAN  V(2)  V(4)
+*Only for 4051 - 4316 with TRAN analyse
+
+.PROBE V(2)  V(3)
+.END
